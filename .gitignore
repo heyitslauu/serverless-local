@@ -1,0 +1,29 @@
+# Node dependencies
+node_modules/
+
+# Local DynamoDB data
+.dynamodb/
+
+# Docker volumes (if it persists state locally)
+docker/dynamodb/
+
+# Build artifacts (if applicable)
+dist/
+build/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional: local env files
+.env
+
+# Logs
+*.log
+
+# IDE / OS generated files
+.DS_Store
+.vscode/
+
+*.js
+
+undefined*

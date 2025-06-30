@@ -1,0 +1,65 @@
+service: dynamodb-crud-api
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  stage: dev
+  region: ap-southeast-1
+  architecture: x86_64
+  environment:
+    DYNAMODB_TABLE_NAME: ${self:custom.postsTableName}
+    IS_OFFLINE: true
+
+custom:
+  #   postsTableName: posts-table-${self:provider.stage}
+  postsTableName: SampleTable
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+
+functions:
+  getAllPosts:
+    handler: src/api/posts/getAllPost.handler
+    name: get-all-posts
+    memorySize: 256 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: posts
+          method: GET
+  getPost:
+    handler: src/api/posts/getPost.handler
+    name: get-post
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: post/{postId}
+          method: GET
+
+  createPost:
+    handler: src/api/posts/createPost.handler
+    name: create-post
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: post
+          method: POST
+
+resources:
+  Resources:
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.postsTableName}
+        AttributeDefinitions:
+          - AttributeName: postId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: postId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
