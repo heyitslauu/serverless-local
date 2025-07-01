@@ -66,31 +66,77 @@ Double check that container is running properly
 sls offline start
 ```
 
-Developer must already have a `Serverless Framework Account` registered since this script with authenticate using the key.
+### 6. AWS Deployment
 
-## 📁 Project Structure
-
-This project follows a modular and organized folder structure to keep responsibilities separated and maintainable.
-
-```.
-├── src
-│ ├── api
-│ │ └── posts
-│ │ ├── createPost.ts # Lambda handler for creating a new post
-│ │ ├── getPost.ts # Lambda handler for retrieving a single post by ID
-│ │ └── getAllPosts.ts # Lambda handler for retrieving all posts
-│ ├── services
-│ │ └── postService.ts # Core logic interacting with DynamoDB (create, read, list)
-│ ├── types
-│ │ └── post.interface.ts # TypeScript interfaces for post data shape
-│ └── utils
-│ └── dbClient.ts # Shared DynamoDB client configuration
-├── serverless.yml # Serverless Framework configuration (functions, resources, plugins)
-├── tsconfig.json # TypeScript configuration
-└── package.json # Project dependencies and scripts
+```bash
+serverless deploy --aws-profile {aws.profile}
 ```
 
+```
+⚠️ Note:
+Ensure that the {aws.profile} used for deployment has the necessary AWS IAM permissions. Without these, deployment may fail due to unauthorized actions when provisioning resources like Lambda, DynamoDB, or API Gateway. Please contact your AWS Administrator for these policies.
+```
+
+### ✅ Required IAM Permissions / Policies
+
+The IAM user or role associated with your AWS profile should have access to the following actions:
+
+#### ✅ General (required by Serverless Framework)
+
+- `ssm:GetParameter`
+- `ssm:PutParameter`
+- `s3:CreateBucket`
+- `s3:PutObject`
+- `s3:GetObject`
+- `s3:ListBucket`
+- `cloudformation:*`
+  - _(or specifically: `CreateStack`, `UpdateStack`, `DescribeStack_`, `DeleteStack`)\*
+
+#### ✅ Lambda Functions
+
+- `lambda:CreateFunction`
+- `lambda:UpdateFunctionCode`
+- `lambda:UpdateFunctionConfiguration`
+- `lambda:InvokeFunction`
+- `iam:PassRole`
+
+#### ✅ IAM Roles (for Lambda execution)
+
+- `iam:CreateRole`
+- `iam:PutRolePolicy`
+- `iam:AttachRolePolicy`
+- `iam:TagRole`
+
+#### ✅ API Gateway
+
+- `apigateway:*`
+  - _(or at least: `POST`, `GET`, `PUT`, `DELETE`, `PATCH` on `restapis`)_
+
+#### ✅ DynamoDB
+
+- `dynamodb:CreateTable`
+- `dynamodb:DeleteTable`
+- `dynamodb:PutItem`
+- `dynamodb:GetItem`
+- `dynamodb:Scan`
+- `dynamodb:UpdateItem`
+- `dynamodb:DeleteItem`
+
 ---
+
+#### ✅ Tip
+
+You can attach AWS-managed policies such as:
+
+- `AmazonDynamoDBFullAccess`
+- `AWSLambda_FullAccess`
+- `AmazonAPIGatewayAdministrator`
+- `IAMFullAccess`
+- `AmazonSSMFullAccess`
+- `AmazonS3FullAccess`
+- `AWSCloudFormationFullAccess`
+
+> ℹ️ For **production environments**, it's best practice to create a custom IAM policy scoped only to the exact actions and resources your app needs.
 
 ## 🧱 Folder Purpose
 
