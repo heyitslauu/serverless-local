@@ -27,6 +27,40 @@ A simple REST API built with the Serverless Framework, TypeScript, AWS Lambda, a
 
 ## 📦 Getting Started
 
+To successfully deploy this project to AWS, ensure you have the following tools installed and configured on your machine:
+
+### 🔧 Prerequisites
+
+#### ✅ [Node.js](https://nodejs.org/)
+
+Install the LTS version of Node.js (v2x.x or later is recommended).
+
+#### ✅ [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+Install the AWS Command Line Interface (CLI) and configure it:
+
+```bash
+aws configure --profile your-aws-profile
+```
+
+#### ✅ [Serverless](https://www.serverless.com/framework/docs/getting-started/)
+
+Install Serverless Framework globally:
+
+```bash
+npm install -g serverless
+```
+
+Confirm it's installed:
+
+```bash
+serverless --version
+```
+
+✅ AWS Credentials
+
+You must have valid AWS credentials configured via ~/.aws/credentials under the profile name you'll use for deployment (e.g., your-aws-profile).
+
 ### 1. Clone the Repository
 
 ```bash
