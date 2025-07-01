@@ -8,10 +8,21 @@ provider:
   architecture: x86_64
   environment:
     DYNAMODB_TABLE_NAME: ${self:custom.postsTableName}
-    IS_OFFLINE: true
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.postsTableName}
 
 custom:
-  #   postsTableName: posts-table-${self:provider.stage}
   postsTableName: SampleTable
 
 plugins:
