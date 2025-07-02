@@ -10,7 +10,7 @@
 			"name": "Allotments",
 			"item": [
 				{
-					"name": "Get Allotments by Office",
+					"name": "Get Allotments by Office ID",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -86,12 +86,12 @@
 			"name": "PAP",
 			"item": [
 				{
-					"name": "Get PAPs by Allotment",
+					"name": "Get PAPs by Allotment ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/dev/pap/A11",
+							"raw": "http://localhost:3000/dev/pap/by-allotment/A11",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -100,6 +100,7 @@
 							"path": [
 								"dev",
 								"pap",
+								"by-allotment",
 								"A11"
 							]
 						}
@@ -107,7 +108,7 @@
 					"response": []
 				},
 				{
-					"name": "Get a specific PAP by ID",
+					"name": "Get a specific PAP by AID",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -194,12 +195,12 @@
 					"response": []
 				},
 				{
-					"name": "GET UACS by PAP",
+					"name": "GET UACS by PAP ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/dev/pap/PAP001/uacs",
+							"raw": "http://localhost:3000/dev/uacs/by-pap/PAP001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -207,9 +208,9 @@
 							"port": "3000",
 							"path": [
 								"dev",
-								"pap",
-								"PAP001",
-								"uacs"
+								"uacs",
+								"by-pap",
+								"PAP001"
 							]
 						}
 					},
