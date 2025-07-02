@@ -10,23 +10,24 @@ provider:
   environment:
     DYNAMODB_TABLE_NAME: ${self:custom.allotmentsTable}
 
-# DO NOT REMOVE/DELETE THE COMMENTED LINES
+  # DO NOT REMOVE/DELETE THE COMMENTED LINES
 
-#   iam:
-#     role:
-#       statements:
-#         - Effect: Allow
-#           Action:
-#             - dynamodb:Scan
-#             - dynamodb:GetItem
-#             - dynamodb:PutItem
-#             - dynamodb:UpdateItem
-#             - dynamodb:DeleteItem
-#           Resource:
-#             - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.allotmentsTable}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.allotmentsTable}
 
 custom:
   allotmentsTable: Allotments
+#   mainTableName: budget-db-${self:provider.stage}
 
 plugins:
   - serverless-offline
@@ -83,7 +84,7 @@ functions:
     timeout: 10 # seconds
     events:
       - http:
-          path: /pap/{allotmentId}
+          path: /pap/by-allotment/{allotmentId}
           method: GET
 
   getPAP:
@@ -105,7 +106,7 @@ functions:
     timeout: 10 # seconds
     events:
       - http:
-          path: /pap/{papId}/uacs
+          path: /uacs/{papId}
           method: POST
 
   getUACSbyPAP:
@@ -115,23 +116,28 @@ functions:
     timeout: 10 # seconds
     events:
       - http:
-          path: /pap/{papId}/uacs
+          path: /uacs/by-pap/{papId}
           method: GET
 
   #<======================= UACS ==========================>
 # DO NOT REMOVE/DELETE THE COMMENTED LINES
-# resources:
-#   Resources:
-#     PostsTable:
-#       Type: AWS::DynamoDB::Table
-#       Properties:
-#         TableName: ${self:custom.postsTableName}
-#         AttributeDefinitions:
-#           - AttributeName: postId
-#             AttributeType: S
-#         KeySchema:
-#           - AttributeName: postId
-#             KeyType: HASH
-#         ProvisionedThroughput:
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
+resources:
+  Resources:
+    MainTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.allotmentsTable}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
