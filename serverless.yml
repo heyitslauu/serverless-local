@@ -1,5 +1,6 @@
-service: dynamodb-crud-api
+service: finance-allotment-api
 
+# DO NOT REMOVE/DELETE THE COMMENTED LINES
 provider:
   name: aws
   runtime: nodejs22.x
@@ -7,70 +8,130 @@ provider:
   region: ap-southeast-1
   architecture: x86_64
   environment:
-    DYNAMODB_TABLE_NAME: ${self:custom.postsTableName}
+    DYNAMODB_TABLE_NAME: ${self:custom.allotmentsTable}
 
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.postsTableName}
+# DO NOT REMOVE/DELETE THE COMMENTED LINES
+
+#   iam:
+#     role:
+#       statements:
+#         - Effect: Allow
+#           Action:
+#             - dynamodb:Scan
+#             - dynamodb:GetItem
+#             - dynamodb:PutItem
+#             - dynamodb:UpdateItem
+#             - dynamodb:DeleteItem
+#           Resource:
+#             - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.allotmentsTable}
 
 custom:
-  postsTableName: SampleTable
+  allotmentsTable: Allotments
 
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
 
 functions:
-  getAllPosts:
-    handler: src/api/posts/getAllPost.handler
-    name: get-all-posts
+  #<====================== ALLOTMENT ======================>
+  getAllotmentsByOffice:
+    handler: src/api/allotments/getAllotmentByOffice.handler
+    name: get-allotments-by-office
     memorySize: 256 # mb
     timeout: 5 # seconds
     events:
       - http:
-          path: posts
-          method: GET
-  getPost:
-    handler: src/api/posts/getPost.handler
-    name: get-post
-    memorySize: 256 # mb
-    timeout: 10 # seconds
-    events:
-      - http:
-          path: post/{postId}
+          path: /allotments/office/{officeId}
           method: GET
 
-  createPost:
-    handler: src/api/posts/createPost.handler
-    name: create-post
+  getAllAllotments:
+    handler: src/api/allotments/getAllAllotments.handler
+    name: get-all-alloments
+    memorySize: 256 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: allotments
+          method: GET
+
+  createAllotment:
+    handler: src/api/allotments/createAllotment.handler
+    name: create-alloment
     memorySize: 256 # mb
     timeout: 10 # seconds
     events:
       - http:
-          path: post
+          path: allotments
+          method: POST
+  #<====================== ALLOTMENT ======================>
+
+  #<======================= PAP ===========================>
+  createPAP:
+    handler: src/api/pap/createPAP.handler
+    name: create-pap
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: pap
           method: POST
 
-resources:
-  Resources:
-    PostsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.postsTableName}
-        AttributeDefinitions:
-          - AttributeName: postId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: postId
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+  getPAPsbyAllotment:
+    handler: src/api/pap/getPAPsByAllotment.handler
+    name: get-paps-by-allotment
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /pap/{allotmentId}
+          method: GET
+
+  getPAP:
+    handler: src/api/pap/getPAP.handler
+    name: get-specific-pap-by-id
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /pap/{allotmentId}/{papId}
+          method: GET
+  #<======================= PAP ===========================>
+
+  #<======================= UACS ==========================>
+  createUACS:
+    handler: src/api/uacs/createUACS.handler
+    name: post-uacs-to-pap
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /pap/{papId}/uacs
+          method: POST
+
+  getUACSbyPAP:
+    handler: src/api/uacs/getUACSbyPAP.handler
+    name: get-uacs-by-pap
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /pap/{papId}/uacs
+          method: GET
+
+  #<======================= UACS ==========================>
+# DO NOT REMOVE/DELETE THE COMMENTED LINES
+# resources:
+#   Resources:
+#     PostsTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: ${self:custom.postsTableName}
+#         AttributeDefinitions:
+#           - AttributeName: postId
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: postId
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
