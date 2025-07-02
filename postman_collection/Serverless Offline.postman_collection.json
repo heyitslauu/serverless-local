@@ -1,0 +1,319 @@
+{
+	"info": {
+		"_postman_id": "476fbbd2-0f7b-41e9-b608-4882e21ba954",
+		"name": "Serverless Offline",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10087862"
+	},
+	"item": [
+		{
+			"name": "Allotments",
+			"item": [
+				{
+					"name": "Get Allotments by Office",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments/office/001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments",
+								"office",
+								"001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Allotments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Allotment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"officeId\": \"001\",\r\n  \"allotmentId\": \"A22\",\r\n  \"amount\": 3000,\r\n  \"year\": 2025,\r\n  \"remarks\": \"For Q1 Programs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PAP",
+			"item": [
+				{
+					"name": "Get PAPs by Allotment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/pap/A11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"pap",
+								"A11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a specific PAP by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/pap/A11/PAP001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"pap",
+								"A11",
+								"PAP001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create PAP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"officeId\": \"001\",\r\n  \"allotmentId\": \"A11\",\r\n  \"papId\": \"PAP001\",\r\n  \"name\": \"Livelihood Program\",\r\n  \"description\": \"Programs to support community livelihood\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/pap",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"pap"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UACS",
+			"item": [
+				{
+					"name": "Create UACS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"654321\",\r\n  \"description\": \"Salaries\",\r\n  \"amount\": 20000,\r\n  \"fundingSource\": \"GASS\",\r\n  \"quarter\": \"Q1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/pap/PAP001/uacs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"pap",
+								"PAP001",
+								"uacs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET UACS by PAP",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/pap/PAP001/uacs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"pap",
+								"PAP001",
+								"uacs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "Fetch Post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/post/22ab1823-7b9f-4bd3-88c2-eb884411fae5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"post",
+								"22ab1823-7b9f-4bd3-88c2-eb884411fae5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch All Prod",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://taflsj0tok.execute-api.ap-southeast-1.amazonaws.com/dev/posts",
+							"protocol": "https",
+							"host": [
+								"taflsj0tok",
+								"execute-api",
+								"ap-southeast-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch All Post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/posts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Laurence Carl Jas\",\r\n    \"last_name\": \"Cadag\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/post",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"post"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
