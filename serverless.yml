@@ -1,4 +1,4 @@
-service: finance-allotment-api
+service: empowerex-finance
 
 # DO NOT REMOVE/DELETE THE COMMENTED LINES
 provider:
@@ -8,26 +8,25 @@ provider:
   region: ap-southeast-1
   architecture: x86_64
   environment:
-    DYNAMODB_TABLE_NAME: ${self:custom.allotmentsTable}
-
-  # DO NOT REMOVE/DELETE THE COMMENTED LINES
-
+    DYNAMODB_TABLE_NAME: ${self:custom.empowerexFinance}
   iam:
     role:
       statements:
         - Effect: Allow
           Action:
+            - dynamodb:Query
             - dynamodb:Scan
             - dynamodb:GetItem
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
           Resource:
-            - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.allotmentsTable}
+            - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.empowerexFinance}
+            - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:custom.empowerexFinance}/index/*
 
 custom:
-  allotmentsTable: Allotments
-#   mainTableName: budget-db-${self:provider.stage}
+  empowerexFinance: EmpowerexFinance
 
 plugins:
   - serverless-offline
@@ -35,9 +34,19 @@ plugins:
 
 functions:
   #<====================== ALLOTMENT ======================>
+  downloadAllotment:
+    handler: src/api/allotments/downloadAllotment.handler
+    name: create-alloment-with-uacs
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: allotments
+          method: POST
+
   getAllotmentsByOffice:
     handler: src/api/allotments/getAllotmentByOffice.handler
-    name: get-allotments-by-office
+    name: get-alloments-by-office
     memorySize: 256 # mb
     timeout: 5 # seconds
     events:
@@ -45,9 +54,9 @@ functions:
           path: /allotments/office/{officeId}
           method: GET
 
-  getAllAllotments:
-    handler: src/api/allotments/getAllAllotments.handler
-    name: get-all-alloments
+  getAllotments:
+    handler: src/api/allotments/filterAllotments.handler
+    name: filter-alloments
     memorySize: 256 # mb
     timeout: 5 # seconds
     events:
@@ -55,89 +64,88 @@ functions:
           path: allotments
           method: GET
 
-  createAllotment:
-    handler: src/api/allotments/createAllotment.handler
-    name: create-alloment
+  getAllotmentById:
+    handler: src/api/allotments/getAllotmentById.handler
+    name: get-alloment-by-id
     memorySize: 256 # mb
-    timeout: 10 # seconds
+    timeout: 5 # seconds
     events:
       - http:
-          path: allotments
-          method: POST
-  #<====================== ALLOTMENT ======================>
-
-  #<======================= PAP ===========================>
-  createPAP:
-    handler: src/api/pap/createPAP.handler
-    name: create-pap
-    memorySize: 256 # mb
-    timeout: 10 # seconds
-    events:
-      - http:
-          path: pap
-          method: POST
-
-  getPAPsbyAllotment:
-    handler: src/api/pap/getPAPsByAllotment.handler
-    name: get-paps-by-allotment
-    memorySize: 256 # mb
-    timeout: 10 # seconds
-    events:
-      - http:
-          path: /pap/by-allotment/{allotmentId}
+          path: /allotments/{allotmentId}
           method: GET
 
-  getPAP:
-    handler: src/api/pap/getPAP.handler
-    name: get-specific-pap-by-id
-    memorySize: 256 # mb
-    timeout: 10 # seconds
+  patchAllotmentBreakdown:
+    handler: src/api/allotments/patchAllotmentBreakdown.handler
+    name: patch-allotment-breakdown
+    memorySize: 256
+    timeout: 5
     events:
       - http:
-          path: /pap/{allotmentId}/{papId}
-          method: GET
-  #<======================= PAP ===========================>
+          path: /allotments/{allotmentId}/breakdown
+          method: PATCH
 
-  #<======================= UACS ==========================>
-  createUACS:
-    handler: src/api/uacs/createUACS.handler
-    name: post-uacs-to-pap
-    memorySize: 256 # mb
-    timeout: 10 # seconds
-    events:
-      - http:
-          path: /uacs/{papId}
-          method: POST
-
-  getUACSbyPAP:
-    handler: src/api/uacs/getUACSbyPAP.handler
-    name: get-uacs-by-pap
-    memorySize: 256 # mb
-    timeout: 10 # seconds
-    events:
-      - http:
-          path: /uacs/by-pap/{papId}
-          method: GET
-
-  #<======================= UACS ==========================>
-# DO NOT REMOVE/DELETE THE COMMENTED LINES
+#<====================== ALLOTMENT ======================>
 resources:
   Resources:
-    MainTable:
+    EmpowerexFinanceTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.allotmentsTable}
+        TableName: EmpowerexFinance
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
-          - AttributeName: pk
+          - AttributeName: PK
             AttributeType: S
-          - AttributeName: sk
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: status
+            AttributeType: S
+          - AttributeName: papId
+            AttributeType: S
+          - AttributeName: allotmentId
+            AttributeType: S
+          - AttributeName: particulars
+            AttributeType: S
+          - AttributeName: createdAt
             AttributeType: S
         KeySchema:
-          - AttributeName: pk
+          - AttributeName: PK
             KeyType: HASH
-          - AttributeName: sk
+          - AttributeName: SK
             KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
-        Tags:
-          - Key: Environment
-            Value: ${self:provider.stage}
+        GlobalSecondaryIndexes:
+          - IndexName: StatusIndex
+            KeySchema:
+              - AttributeName: status
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+          - IndexName: AllotmentIdIndex
+            KeySchema:
+              - AttributeName: allotmentId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+          - IndexName: PapIdIndex
+            KeySchema:
+              - AttributeName: papId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+          - IndexName: ParticularsIndex
+            KeySchema:
+              - AttributeName: particulars
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+          - IndexName: StatusCreatedAtIndex
+            KeySchema:
+              - AttributeName: status
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
