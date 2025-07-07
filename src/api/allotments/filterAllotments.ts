@@ -2,11 +2,22 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 
 import { allotmentService } from "../../services/allotmentService";
 
-const { getAllAllotments } = allotmentService();
+const { filterAllotments } = allotmentService();
 
-export const handler: APIGatewayProxyHandler = async () => {
+export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    const allotments = await getAllAllotments();
+    const query = event.queryStringParameters || {};
+
+    const filters = {
+      status: query.status,
+      from: query.from,
+      to: query.to,
+      papId: query.papId,
+      allotmentId: query.allotmentId,
+      particulars: query.particulars,
+      search: query.search,
+    };
+    const allotments = await filterAllotments(filters);
 
     return {
       statusCode: 200,

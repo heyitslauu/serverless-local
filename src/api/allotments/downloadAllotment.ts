@@ -6,11 +6,7 @@ const { downloadAllotment } = allotmentService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    if (!event.body) {
-      throw new Error("Missing request body.");
-    }
-
-    const body = JSON.parse(event.body);
+    const body = JSON.parse(event.body || "{}");
     const newAllotment = await downloadAllotment(body);
     return {
       statusCode: 200,

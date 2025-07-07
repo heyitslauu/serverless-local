@@ -2,27 +2,29 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 
 import { allotmentService } from "../../services/allotmentService";
 
-const { getAllotmentByOffice } = allotmentService();
+const { getAllotmentById } = allotmentService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    const officeId = event.pathParameters?.officeId;
-    if (!officeId) {
+    const allotmentId = event.pathParameters?.allotmentId;
+
+    if (!allotmentId) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          message: "Missing officeId in path parameters.",
+          message: "Missing Allotment ID in path parameters.",
         }),
       };
     }
-    const result = await getAllotmentByOffice(officeId);
+
+    const allotment = await getAllotmentById(allotmentId);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Successfully retrieved all allotments",
-        data: result.items,
-        totalAlloted: result.totalAlloted,
+        message: "Successfully retrieved all allotments.",
+        data: allotment.items,
+        totalAlloted: allotment.totalAlloted,
       }),
     };
   } catch (error: any) {
