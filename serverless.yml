@@ -33,6 +33,82 @@ plugins:
   - serverless-dynamodb-local
 
 functions:
+  #<====================== OFFICES ======================>
+  createOffice:
+    handler: src/api/offices/createOffice.handler
+    name: create-office
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices
+          method: POST
+
+  getOffices:
+    handler: src/api/offices/getOffices.handler
+    name: get-all-offices
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices
+          method: GET
+
+  getOfficeById:
+    handler: src/api/offices/getOfficeById.handler
+    name: get-office-by-id
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices/{officeId}
+          method: GET
+
+  attachPAPToOffice:
+    handler: src/api/pap/attachPAP.handler
+    name: attach-pap-to-office
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices/{officeId}/paps
+          method: POST
+
+  getPAPByOffice:
+    handler: src/api/pap/getPAPByOffice.handler
+    name: get-pap-by-office
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices/{officeId}/paps
+          method: GET
+
+  #<====================== OFFICES ======================>
+
+  #<====================== UACS ===========================>
+  attachUACSToPAP:
+    handler: src/api/uacs/attachUACS.handler
+    name: attach-uacs-to-pap
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices/{officeId}/paps/{papId}/uacs
+          method: POST
+
+  listUACSForPAP:
+    handler: src/api/uacs/getUACS.handler
+    name: list-uacs-for-pap
+    memorySize: 256 # mb
+    timeout: 10 # seconds
+    events:
+      - http:
+          path: /offices/{officeId}/paps/{papId}/uacs
+          method: GET
+
+  #<====================== UACS ===========================>
+
   #<====================== ALLOTMENT ======================>
   downloadAllotment:
     handler: src/api/allotments/downloadAllotment.handler
@@ -48,7 +124,7 @@ functions:
     handler: src/api/allotments/getAllotmentByOffice.handler
     name: get-alloments-by-office
     memorySize: 256 # mb
-    timeout: 5 # seconds
+    timeout: 10 # seconds
     events:
       - http:
           path: /allotments/office/{officeId}
@@ -58,7 +134,7 @@ functions:
     handler: src/api/allotments/filterAllotments.handler
     name: filter-alloments
     memorySize: 256 # mb
-    timeout: 5 # seconds
+    timeout: 10 # seconds
     events:
       - http:
           path: allotments
@@ -68,7 +144,7 @@ functions:
     handler: src/api/allotments/getAllotmentById.handler
     name: get-alloment-by-id
     memorySize: 256 # mb
-    timeout: 5 # seconds
+    timeout: 10 # seconds
     events:
       - http:
           path: /allotments/{allotmentId}
