@@ -10,55 +10,13 @@
 			"name": "Allotments",
 			"item": [
 				{
-					"name": "Get Allotments by Office ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/dev/allotments/office/001",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"allotments",
-								"office",
-								"001"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Allotments",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/dev/allotments",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"allotments"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Allotment",
+					"name": "Create Allotment Initial",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"officeId\": \"001\",\r\n  \"allotmentId\": \"A22\",\r\n  \"amount\": 3000,\r\n  \"year\": 2025,\r\n  \"remarks\": \"For Q1 Programs\"\r\n}",
+							"raw": "{\r\n  \"officeId\": \"CENTRAL\",\r\n  \"allotmentId\": \"QRF-001\",\r\n  \"particulars\": \"Initial allocation to GAA 2025\",\r\n  \"appropriationType\": \"GAA\",\r\n  \"bfarsBudgetType\": \"PS\",\r\n  \"allotmentType\": \"Regular\",\r\n  \"breakdown\": [\r\n    {\r\n      \"fieldOfficeId\": \"FOV\",\r\n      \"papId\": \"ICTMS\",\r\n      \"uacsId\": \"2002\",\r\n      \"amount\": 120000\r\n    },\r\n    {\r\n      \"fieldOfficeId\": \"FOV\",\r\n      \"papId\": \"NHTS\",\r\n      \"uacsId\": \"2002\",\r\n      \"amount\": 120000\r\n    },\r\n    {\r\n      \"fieldOfficeId\": \"FO1\",\r\n      \"papId\": \"ADMIN\",\r\n      \"uacsId\": \"50201010\",\r\n      \"amount\": 100000\r\n    },\r\n    {\r\n      \"fieldOfficeId\": \"FO2\",\r\n      \"papId\": \"LOGISTICS\",\r\n      \"uacsId\": \"50299990\",\r\n      \"amount\": 80000\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -75,6 +33,302 @@
 							"path": [
 								"dev",
 								"allotments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Allotment 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"officeId\": \"MAIN\",\r\n  \"allotmentId\": \"QRF-123\",\r\n  \"particulars\": \"FUCK THIS SHIT\",\r\n  \"appropriationType\": \"GAA\",\r\n  \"bfarsBudgetType\": \"PS\",\r\n  \"allotmentType\": \"Regular\",\r\n  \"breakdown\": [\r\n    {\r\n      \"fieldOfficeId\": \"NCR\",\r\n      \"papId\": \"ICTMS\",\r\n      \"uacsId\": \"2002\",\r\n      \"amount\": 50000\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Allotments Per Office",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments/office/FOV",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments",
+								"office",
+								"FOV"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Allotments by Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments?allotmentId=QRF-001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "FOR-TRIAGE",
+									"disabled": true
+								},
+								{
+									"key": "from",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "to",
+									"value": "2025-01-01",
+									"disabled": true
+								},
+								{
+									"key": "allotmentId",
+									"value": "QRF-001"
+								},
+								{
+									"key": "search",
+									"value": "RANDOM",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Allotment by Allotment ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments/QRF-001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments",
+								"QRF-001"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "FOR-TRIAGE",
+									"disabled": true
+								},
+								{
+									"key": "from",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "to",
+									"value": "2025-01-01",
+									"disabled": true
+								},
+								{
+									"key": "allotmentId",
+									"value": "QRF-001",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "RANDOM",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Allotment by Allotment ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"officeId\": \"MAIN\",\r\n  \"allotmentId\": \"QRF-001\",\r\n  \"breakdown\": [\r\n    {\r\n      \"fieldOfficeId\": \"REGION-02\",\r\n      \"papId\": \"GAD\",\r\n      \"uacsId\": \"7999\",\r\n      \"amount\": 150000\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/allotments/QRF-001/breakdown",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"allotments",
+								"QRF-001",
+								"breakdown"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "FOR-TRIAGE",
+									"disabled": true
+								},
+								{
+									"key": "from",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "to",
+									"value": "2025-01-01",
+									"disabled": true
+								},
+								{
+									"key": "allotmentId",
+									"value": "QRF-001",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "RANDOM",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Offices",
+			"item": [
+				{
+					"name": "Create Office",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"officeId\": \"FOV\",\r\n    \"name\": \"Field Office V\",\r\n    \"location\": \"Rawis, Legazpi City\",\r\n    \"region\": \"5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/offices",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"offices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Offices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/dev/offices",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"offices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Office by Office ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/dev/offices/FOV",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"offices",
+								"FOV"
 							]
 						}
 					},
@@ -86,57 +340,13 @@
 			"name": "PAP",
 			"item": [
 				{
-					"name": "Get PAPs by Allotment ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/dev/pap/by-allotment/A11",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"pap",
-								"by-allotment",
-								"A11"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get a specific PAP by AID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/dev/pap/A11/PAP001",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"pap",
-								"A11",
-								"PAP001"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create PAP",
+					"name": "Attach PAP to Office",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"officeId\": \"001\",\r\n  \"allotmentId\": \"A11\",\r\n  \"papId\": \"PAP001\",\r\n  \"name\": \"Livelihood Program\",\r\n  \"description\": \"Programs to support community livelihood\"\r\n}",
+							"raw": "{\r\n  \"code\": \"100000100001000\",\r\n  \"name\": \"General Management and Supervision\",\r\n  \"status\": \"ACTIVE\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -144,7 +354,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/dev/pap",
+							"raw": "http://localhost:3000/dev/offices/FOV/paps",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -152,7 +362,43 @@
 							"port": "3000",
 							"path": [
 								"dev",
-								"pap"
+								"offices",
+								"FOV",
+								"paps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PAPs by Office",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"100000100001000\",\r\n  \"name\": \"General Management and Supervision\",\r\n  \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/dev/offices/FOV/paps",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"dev",
+								"offices",
+								"FOV",
+								"paps"
 							]
 						}
 					},
@@ -164,13 +410,13 @@
 			"name": "UACS",
 			"item": [
 				{
-					"name": "Create UACS",
+					"name": "Attach UACS to PAP",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"code\": \"654321\",\r\n  \"description\": \"Salaries\",\r\n  \"amount\": 20000,\r\n  \"fundingSource\": \"GASS\",\r\n  \"quarter\": \"Q1\"\r\n}",
+							"raw": "{\r\n    \"uacsId\": \"5020101000\",\r\n    \"name\": \"Traveling Expenses-Local\",\r\n    \"amount\": 300000\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -178,7 +424,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/dev/pap/PAP001/uacs",
+							"raw": "http://localhost:3000/dev/offices/FOV/paps/100000100001000/uacs",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -186,8 +432,10 @@
 							"port": "3000",
 							"path": [
 								"dev",
-								"pap",
-								"PAP001",
+								"offices",
+								"FOV",
+								"paps",
+								"100000100001000",
 								"uacs"
 							]
 						}
@@ -195,12 +443,12 @@
 					"response": []
 				},
 				{
-					"name": "GET UACS by PAP ID",
+					"name": "Get UACS by PAP",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/dev/uacs/by-pap/PAP001",
+							"raw": "http://localhost:3000/dev/offices/FOV/paps/100000100001000/uacs",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -208,107 +456,11 @@
 							"port": "3000",
 							"path": [
 								"dev",
-								"uacs",
-								"by-pap",
-								"PAP001"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Test",
-			"item": [
-				{
-					"name": "Fetch Post",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/dev/post/22ab1823-7b9f-4bd3-88c2-eb884411fae5",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"post",
-								"22ab1823-7b9f-4bd3-88c2-eb884411fae5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Fetch All Prod",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://taflsj0tok.execute-api.ap-southeast-1.amazonaws.com/dev/posts",
-							"protocol": "https",
-							"host": [
-								"taflsj0tok",
-								"execute-api",
-								"ap-southeast-1",
-								"amazonaws",
-								"com"
-							],
-							"path": [
-								"dev",
-								"posts"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Fetch All Post",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/dev/posts",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"posts"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Post",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"Laurence Carl Jas\",\r\n    \"last_name\": \"Cadag\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/dev/post",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"dev",
-								"post"
+								"offices",
+								"FOV",
+								"paps",
+								"100000100001000",
+								"uacs"
 							]
 						}
 					},
