@@ -7,14 +7,14 @@ const { downloadAllotment } = allotmentService();
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
-    const newAllotment = await downloadAllotment(body);
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "Allotment created",
-        allotment: newAllotment,
-      }),
-    };
+    const result = await downloadAllotment(body);
+
+    if ("statusCode" in result && result.statusCode === 422) {
+      return {
+        statusCode: 422,
+        body: JSON.stringify({ errors: result.errors }),
+      };
+    }
   } catch (error) {
     return {
       statusCode: 500,
