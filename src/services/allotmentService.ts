@@ -3,19 +3,91 @@ import {
   QueryCommandOutput,
   ScanCommandOutput,
   ScanCommand,
+  BatchGetItemCommand,
   BatchWriteItemCommand,
   QueryCommand,
   QueryCommandInput,
 } from "@aws-sdk/client-dynamodb";
 
-import {
-  type AllotmentFilters,
-  type AllotmentBreakdown,
-} from "../types/Allotment";
+import { type AllotmentFilters } from "../types/Allotment";
 
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 import { type Allotment } from "../types/Allotment";
+
+const checkOfficeAndPAPExist = async (
+  breakdown: Allotment["breakdown"]
+): Promise<string[]> => {
+  const tableName = process.env.DYNAMODB_TABLE_NAME!;
+  const keysToCheck: { compoundKey: string; PK: string; SK: string }[] = [];
+
+  const seen = new Set<string>();
+
+  for (const { fieldOfficeId, papId } of breakdown) {
+    const officeKey = `OFFICE#${fieldOfficeId}::METADATA`;
+    if (!seen.has(officeKey)) {
+      keysToCheck.push({
+        compoundKey: officeKey,
+        PK: `OFFICE#${fieldOfficeId}`,
+        SK: `METADATA`,
+      });
+      seen.add(officeKey);
+    }
+
+    const papKey = `OFFICE#${fieldOfficeId}::PAP#${papId}`;
+    if (!seen.has(papKey)) {
+      keysToCheck.push({
+        compoundKey: papKey,
+        PK: `OFFICE#${fieldOfficeId}`,
+        SK: `PAP#${papId}`,
+      });
+      seen.add(papKey);
+    }
+  }
+
+  const errors: string[] = [];
+
+  // Batch in chunks of 100
+  for (let i = 0; i < keysToCheck.length; i += 100) {
+    const batch = keysToCheck.slice(i, i + 100);
+
+    const command = new BatchGetItemCommand({
+      RequestItems: {
+        [tableName]: {
+          Keys: batch.map(({ PK, SK }) => marshall({ PK, SK })),
+        },
+      },
+    });
+
+    const response = await dbClient.send(command);
+    const found = new Set(
+      (response.Responses?.[tableName] ?? []).map((item) => {
+        const { PK, SK } = unmarshall(item);
+        return `${PK}::${SK}`;
+      })
+    );
+
+    for (const { compoundKey } of batch) {
+      if (!found.has(compoundKey)) {
+        const [pk, sk] = compoundKey.split("::");
+        if (sk === "METADATA") {
+          errors.push(`Office '${pk.replace("OFFICE#", "")}' not found.`);
+        } else if (sk.startsWith("PAP#")) {
+          errors.push(
+            `PAP '${sk.replace("PAP#", "")}' not found for office '${pk.replace(
+              "OFFICE#",
+              ""
+            )}'.`
+          );
+        } else {
+          errors.push(`Record '${compoundKey}' not found.`);
+        }
+      }
+    }
+  }
+
+  return errors;
+};
 
 export function allotmentService() {
   const downloadAllotment = async (body: Allotment) => {
@@ -31,67 +103,73 @@ export function allotmentService() {
       breakdown,
     } = body;
 
+    const errors = await checkOfficeAndPAPExist(breakdown);
+
+    if (errors.length > 0) {
+      return {
+        statusCode: 422,
+        message: "Validation Error",
+        errors: errors,
+      };
+    }
+
     const timestamp = new Date().toISOString();
-    const items = [];
+    const upperAllotmentId = allotmentId.toUpperCase();
 
-    for (const entry of breakdown) {
-      const { fieldOfficeId, papId, uacsId, amount: entryAmount } = entry;
-
-      items.push({
+    const batchWriteItems = breakdown.map(
+      ({ fieldOfficeId, papId, uacsId, amount }) => ({
         PutRequest: {
-          Item: {
-            PK: { S: `OFFICE#${fieldOfficeId}` },
-            SK: { S: `ALLOTMENT#${allotmentId}#PAP#${papId}#UACS#${uacsId}` },
-            allotmentId: { S: allotmentId.toUpperCase() },
-            officeFrom: { S: officeId },
-            fieldOfficeId: { S: fieldOfficeId },
-            papId: { S: papId },
-            uacsId: { S: uacsId },
-            amount: { N: entryAmount.toString() },
-            particulars: { S: particulars.toUpperCase() },
-            appropriationType: { S: appropriationType.toUpperCase() },
-            bfarsBudgetType: { S: bfarsBudgetType.toUpperCase() },
-            allotmentType: { S: allotmentType.toUpperCase() },
-            createdAt: { S: timestamp },
-            status: { S: "FOR-TRIAGE" },
-          },
+          Item: marshall({
+            PK: `OFFICE#${fieldOfficeId}`,
+            SK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}`,
+            allotmentId: upperAllotmentId,
+            officeFrom: officeId,
+            fieldOfficeId,
+            papId,
+            uacsId,
+            amount,
+            particulars: particulars.toUpperCase(),
+            appropriationType: appropriationType.toUpperCase(),
+            bfarsBudgetType: bfarsBudgetType.toUpperCase(),
+            allotmentType: allotmentType.toUpperCase(),
+            createdAt: timestamp,
+            status: "FOR-TRIAGE",
+          }),
         },
-      });
+      })
+    );
+
+    for (let i = 0; i < batchWriteItems.length; i += 25) {
+      await dbClient.send(
+        new BatchWriteItemCommand({
+          RequestItems: {
+            [tableName]: batchWriteItems.slice(i, i + 25),
+          },
+        })
+      );
     }
 
-    for (let i = 0; i < items.length; i += 25) {
-      const batch = items.slice(i, i + 25);
-      const command = new BatchWriteItemCommand({
-        RequestItems: {
-          [tableName]: batch,
-        },
-      });
-      await dbClient.send(command);
-    }
+    const papBreakdown = breakdown.reduce(
+      (acc, { fieldOfficeId, papId, uacsId, amount }) => {
+        let officeEntry = acc.find((e) => e.fieldOfficeId === fieldOfficeId);
+        if (!officeEntry) {
+          officeEntry = { fieldOfficeId, entries: [] };
+          acc.push(officeEntry);
+        }
+        officeEntry.entries.push({ papId, uacsId, amount });
+        return acc;
+      },
+      [] as {
+        fieldOfficeId: string;
+        entries: { papId: string; uacsId: string; amount: number }[];
+      }[]
+    );
 
     return {
-      allotmentId,
+      allotmentId: upperAllotmentId,
       recordsCreated: breakdown.length,
       totalAlloted: breakdown.reduce((sum, b) => sum + b.amount, 0),
-      papBreakdown: breakdown.reduce((acc, curr) => {
-        const { fieldOfficeId, papId, uacsId, amount } = curr;
-
-        const existing = acc.find(
-          (item) => item.fieldOfficeId === fieldOfficeId
-        );
-        const entry = { papId, uacsId, amount };
-
-        if (existing) {
-          existing.entries.push(entry);
-        } else {
-          acc.push({
-            fieldOfficeId,
-            entries: [entry],
-          });
-        }
-
-        return acc;
-      }, [] as { fieldOfficeId: string; entries: { papId: string; uacsId: string; amount: number }[] }[]),
+      papBreakdown,
     };
   };
 
@@ -121,12 +199,12 @@ export function allotmentService() {
 
   const filterAllotments = async (filters: AllotmentFilters = {}) => {
     const { status, createdAtRange, papId, allotmentId, search } = filters;
-
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
     let command;
 
     if (status && createdAtRange) {
       command = new QueryCommand({
-        TableName: "EmpowerexFinance",
+        TableName: tableName,
         IndexName: "StatusCreatedAtIndex",
         KeyConditionExpression:
           "#status = :status AND #createdAt BETWEEN :from AND :to",
@@ -142,7 +220,7 @@ export function allotmentService() {
       });
     } else if (status) {
       command = new QueryCommand({
-        TableName: "EmpowerexFinance",
+        TableName: tableName,
         IndexName: "StatusIndex",
         KeyConditionExpression: "#status = :status",
         ExpressionAttributeNames: { "#status": "status" },
@@ -150,7 +228,7 @@ export function allotmentService() {
       });
     } else if (papId) {
       command = new QueryCommand({
-        TableName: "EmpowerexFinance",
+        TableName: tableName,
         IndexName: "PapIdIndex",
         KeyConditionExpression: "#papId = :papId",
         ExpressionAttributeNames: { "#papId": "papId" },
@@ -158,16 +236,15 @@ export function allotmentService() {
       });
     } else if (allotmentId) {
       command = new QueryCommand({
-        TableName: "EmpowerexFinance",
+        TableName: tableName,
         IndexName: "AllotmentIdIndex",
         KeyConditionExpression: "#allotmentId = :allotmentId",
         ExpressionAttributeNames: { "#allotmentId": "allotmentId" },
         ExpressionAttributeValues: { ":allotmentId": { S: allotmentId } },
       });
     } else if (search) {
-      // ✅ Search using contains() on both fields — fallback to Scan
       command = new ScanCommand({
-        TableName: "EmpowerexFinance",
+        TableName: tableName,
         FilterExpression:
           "contains(allotmentId, :search) OR contains(particulars, :search)",
         ExpressionAttributeValues: {
@@ -175,8 +252,7 @@ export function allotmentService() {
         },
       });
     } else {
-      // ⚠️ No filter provided — fallback to full scan
-      command = new ScanCommand({ TableName: "EmpowerexFinance" });
+      command = new ScanCommand({ TableName: tableName });
     }
 
     const response = (await dbClient.send(command)) as
@@ -188,8 +264,9 @@ export function allotmentService() {
   };
 
   const getAllotmentById = async (allotmentId: string) => {
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
     const command = new QueryCommand({
-      TableName: "EmpowerexFinance",
+      TableName: tableName,
       IndexName: "AllotmentIdIndex",
       KeyConditionExpression: "#allotmentId = :allotmentId",
       ExpressionAttributeNames: {
@@ -204,8 +281,8 @@ export function allotmentService() {
     const items = result.Items?.map((item) => unmarshall(item)) ?? [];
 
     const totalAlloted = items.reduce((sum, item) => {
-      const value = Number(item.amount);
-      return sum + (isNaN(value) ? 0 : value);
+      const value = Number(item.PutRequest.Item.amount.N);
+      return sum + (isNaN(value) ? 0 : value / 100);
     }, 0);
 
     return {
@@ -243,7 +320,7 @@ export function allotmentService() {
             fieldOfficeId: { S: fieldOfficeId },
             papId: { S: papId },
             uacsId: { S: uacsId },
-            amount: { N: amount.toString() },
+            amount: { N: (amount * 100).toString() },
             createdAt: { S: timestamp },
             status: { S: "FOR-TRIAGE" },
           },
