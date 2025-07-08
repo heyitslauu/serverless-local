@@ -2,21 +2,17 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 
 import { papService } from "../../services/papService";
 
-const { getPAP } = papService();
+const { getPAPByOffice } = papService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    const allotmentId = event.pathParameters?.allotmentId;
-    const papId = event.pathParameters?.papId;
+    const officeId = event.pathParameters?.officeId;
 
-    if (!allotmentId || !papId) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: "Missing allotmentId or papId." }),
-      };
+    if (!officeId) {
+      throw new Error("officeId is required in pathParameters.");
     }
 
-    const result = await getPAP(allotmentId, papId);
+    const result = await getPAPByOffice(officeId);
 
     if (!result) {
       return {
