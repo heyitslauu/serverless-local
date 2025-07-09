@@ -74,17 +74,7 @@ cd your-repo-name
 npm install
 ```
 
-### 3. Set Up Environment Variables
-
-Create a .env file in the root of your project (optional but recommended for local/offline dev):
-
-```bash
-DYNAMODB_TABLE_NAME=SampleTable
-```
-
-`Alternatively, ensure your serverless.yml has the correct DYNAMODB_TABLE_NAME value under environment.`
-
-### 4. Start Local DynamoDB
+### 3. Start Local DynamoDB Container
 
 In this repository, we will be using Docker Container. Run:
 
@@ -94,13 +84,22 @@ docker-compose up -d
 
 Double check that container is running properly
 
-### 5. Start the Offline Server
+### 4. Start the Offline Server
 
 ```bash
 sls offline start
 ```
 
-### 6. AWS Deployment
+```
+⚠️ **Note:**
+To run `sls offline start`, you must have:
+- An access key from [Serverless](https://www.serverless.com/)
+- AWS credentials (Access Key ID and Secret Access Key) configured in your environment
+```
+
+\
+
+### 5. AWS Deployment
 
 ```bash
 serverless deploy --aws-profile {aws.profile}
