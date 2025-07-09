@@ -4,12 +4,6 @@
 aws dynamodb create-table --cli-input-json file://src/db/schema.json --endpoint-url http://localhost:8000
 ```
 
-# CREATE TABLE
-
-```bash
-aws dynamodb create-table --table-name EmpowerexFinance --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://localhost:8000
-```
-
 # DELETE TABLE
 
 ```bash
