@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "8a05ad7c-7edb-4f67-ad9d-528865a521b8",
+		"name": "Empowerex Finance",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10087862"
+	},
+	"item": [
+		{
+			"name": "Allotments",
+			"item": [
+				{
+					"name": "Create Allotment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"officeId\": \"CENTRAL\",\r\n  \"allotmentId\": \"QRF-001\",\r\n  \"particulars\": \"Initial allocation to GAA 2025\",\r\n  \"appropriationType\": \"GAA\",\r\n  \"bfarsBudgetType\": \"PS\",\r\n  \"allotmentType\": \"Regular\",\r\n  \"breakdown\": [\r\n    {\r\n      \"fieldOfficeId\": \"FOV\",\r\n      \"papId\": \"ICTMS\",\r\n      \"uacsId\": \"2002\",\r\n      \"amount\": 120000\r\n    },\r\n    {\r\n      \"fieldOfficeId\": \"FOV\",\r\n      \"papId\": \"NHTS\",\r\n      \"uacsId\": \"2002\",\r\n      \"amount\": 120000\r\n    },\r\n    {\r\n      \"fieldOfficeId\": \"FO1\",\r\n      \"papId\": \"ADMIN\",\r\n      \"uacsId\": \"50201010\",\r\n      \"amount\": 100000\r\n    },\r\n    {\r\n      \"fieldOfficeId\": \"FO2\",\r\n      \"papId\": \"LOGISTICS\",\r\n      \"uacsId\": \"50299990\",\r\n      \"amount\": 80000\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/allotments",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"allotments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Office",
+			"item": [
+				{
+					"name": "Create Master Office",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"officeId\": \"CENTRAL\",\r\n    \"name\": \"Central Office\",\r\n    \"location\": \"IBP Road, Batasan, Quezon City\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/offices",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"offices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Offices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/offices",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"offices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Office by Office ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/offices/CENTRAL",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"offices",
+								"CENTRAL"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Office by Office ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/offices/CENTRAL",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"offices",
+								"CENTRAL"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PAP",
+			"item": [
+				{
+					"name": "Create Master PAP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"papId\": \"200000100001000\",\r\n    \"name\": \"Information and Communication Technology Service Management\",\r\n    \"status\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/paps",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"paps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Attach PAP to Office",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"papId\": \"310100100001000\",\r\n  \"name\": \"Pantawid Pamilya (Implementation of Conditional Cash Transfer)\",\r\n  \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/offices/CENTRAL/paps",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"offices",
+								"CENTRAL",
+								"paps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PAPs by Office",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"100000100001000\",\r\n  \"name\": \"General Management and Supervision\",\r\n  \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/offices/CENTRAL/paps",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"offices",
+								"CENTRAL",
+								"paps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Master PAPs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/paps",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"paps"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UACS",
+			"item": [
+				{
+					"name": "Create Master UACS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uacsId\": \"100000100001000\",\r\n    \"name\": \"General Management and Supervision\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/uacs",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"uacs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All UACS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uacsId\": \"100000100001000\",\r\n    \"name\": \"General Management and Supervision\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/uacs",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"uacs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete UACS",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"uacsId\": \"100000100001000\",\r\n    \"name\": \"General Management and Supervision\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/{{environment}}/uacs/100000100001000",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"{{environment}}",
+								"uacs",
+								"100000100001000"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

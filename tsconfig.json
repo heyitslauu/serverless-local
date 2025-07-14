@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // optional but helpful
     "downlevelIteration": true,
     "types": ["node"]
   }
