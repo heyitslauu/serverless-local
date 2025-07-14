@@ -1,8 +1,10 @@
 import dbClient from "../db/dbClient";
 import {
   PutItemCommand,
+  ScanCommand,
   GetItemCommand,
   QueryCommand,
+  DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
@@ -16,18 +18,18 @@ export function papService() {
     const timestamp = new Date().toISOString();
 
     const item = {
-      PK: { S: `PAP#${papId}` },
-      SK: { S: "METADATA" },
-      papId: { S: papId },
-      name: { S: name },
-      status: { S: status }, // e.g., "ACTIVE"
-      createdAt: { S: timestamp },
+      PK: `PAP#${papId}`,
+      SK: "METADATA",
+      papId,
+      name,
+      status,
+      createdAt: timestamp,
     };
 
     const command = new PutItemCommand({
       TableName: tableName,
       Item: marshall(item),
-      ConditionExpression: "attribute_not_exists(PK)", // Prevent overwrites
+      ConditionExpression: "attribute_not_exists(PK)",
     });
 
     await dbClient.send(command);
@@ -99,8 +101,8 @@ export function papService() {
       PK: `OFFICE#${officeId}`,
       SK: `PAP#${papId}`,
       papId: papId,
-      description: name,
-      status, // assuming it's a string like "ACTIVE"
+      name,
+      status,
       createdAt: new Date().toISOString(),
     };
 
@@ -132,13 +134,74 @@ export function papService() {
     return response.Items?.map((item) => unmarshall(item)) ?? [];
   };
 
-  const deletePAP = async () => {};
+  const getPAPs = async (): Promise<PAPInput[]> => {
+    const command = new ScanCommand({
+      TableName: tableName,
+      FilterExpression: "SK = :sk AND begins_with(PK, :pkPrefix)",
+      ExpressionAttributeValues: {
+        ":sk": { S: "METADATA" },
+        ":pkPrefix": { S: "PAP#" },
+      },
+    });
+
+    const response = await dbClient.send(command);
+    return response.Items?.map((item) => unmarshall(item) as PAPInput) ?? [];
+  };
+
+  const getPAPByID = async (papId: string) => {
+    if (!papId) {
+      throw new Error("Missing papId");
+    }
+
+    const key = {
+      PK: { S: `PAP#${papId}` },
+      SK: { S: "METADATA" },
+    };
+
+    const command = new GetItemCommand({
+      TableName: tableName,
+      Key: key,
+    });
+
+    const result = await dbClient.send(command);
+
+    if (!result.Item) return null;
+
+    return unmarshall(result.Item);
+  };
+  const deletePAP = async (papId: string) => {
+    try {
+      if (!papId) {
+        throw new Error("Missing papId");
+      }
+
+      const key = {
+        PK: { S: `PAP#${papId}` },
+        SK: { S: "METADATA" },
+      };
+
+      const command = new DeleteItemCommand({
+        TableName: tableName,
+        Key: key,
+        ConditionExpression: "attribute_exists(PK)",
+      });
+
+      await dbClient.send(command);
+
+      return { message: "PAP deleted successfully.", papId };
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return {
     createPAP,
+    getPAPs,
     getPAPsByAllotment,
     getPAP,
     deletePAP,
     attachPAPToOffice,
     getPAPByOffice,
+    getPAPByID,
   };
 }

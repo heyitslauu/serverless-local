@@ -2,28 +2,24 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 
 import { papService } from "../../services/papService";
 
-const { createPAP } = papService();
+const { getPAPs } = papService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    if (!event.body) {
-      throw new Error("Missing request body.");
-    }
-    const body = JSON.parse(event.body);
-    const result = await createPAP(body);
+    const paps = await getPAPs();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "PAP created",
-        pap: result,
+        message: "Successfully retrieved all PAPs.",
+        data: paps,
       }),
     };
   } catch (error) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Error creating PAP",
+        message: "Error retrieving PAPs",
         error: error.message,
       }),
     };
