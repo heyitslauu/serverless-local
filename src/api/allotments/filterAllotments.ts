@@ -23,7 +23,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         message: "Successfully retrieved all allotments.",
-        allotments,
+        data: allotments,
       }),
     };
   } catch (error: any) {

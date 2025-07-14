@@ -2,21 +2,25 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 
 import { allotmentService } from "../../services/allotmentService";
 
-const { downloadAllotment } = allotmentService();
+const { createAllotment } = allotmentService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    if (!event.body) {
-      throw new Error("Missing request body.");
+    const body = JSON.parse(event.body || "{}");
+    const result = await createAllotment(body);
+
+    if ("statusCode" in result && result.statusCode === 422) {
+      return {
+        statusCode: 422,
+        body: JSON.stringify({ errors: result.errors }),
+      };
     }
 
-    const body = JSON.parse(event.body);
-    const newAllotment = await downloadAllotment(body);
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Allotment created",
-        allotment: newAllotment,
+        message: "Created Allotments successfully",
+        data: result,
       }),
     };
   } catch (error) {
