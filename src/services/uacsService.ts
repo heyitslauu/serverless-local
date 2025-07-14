@@ -3,6 +3,8 @@ import {
   GetItemCommand,
   PutItemCommand,
   QueryCommand,
+  ScanCommand,
+  DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
@@ -11,40 +13,88 @@ import { type UACSInput } from "../types/UACS";
 export const uacsService = () => {
   const tableName = process.env.DYNAMODB_TABLE_NAME!;
 
-  const createUACS = async (papId: string, uacsData: any) => {
-    const uacsItem = {
-      PK: `PAP#${papId}`,
-      SK: `UACS#${uacsData.code}`,
-      type: "uacs",
-      ...uacsData,
+  const createUACS = async (body: UACSInput) => {
+    if (!body) {
+      throw new Error("Missing request body.");
+    }
+
+    const { uacsId, name } = body;
+    const timestamp = new Date().toISOString();
+
+    const item = {
+      PK: `UACS#${uacsId}`,
+      SK: "METADATA",
+      uacsId,
+      name,
+      createdAt: timestamp,
     };
 
-    await dbClient.send(
-      new PutItemCommand({
-        TableName: tableName,
-        Item: marshall(uacsItem),
-      })
-    );
+    const params = {
+      TableName: tableName,
+      Item: marshall(item),
+      ConditionExpression: "attribute_not_exists(PK)",
+    };
 
-    return uacsItem;
+    try {
+      await dbClient.send(new PutItemCommand(params));
+      return item;
+    } catch (error: any) {
+      if (error.name === "ConditionalCheckFailedException") {
+        return {
+          statusCode: 422,
+          message: "UACS already exists.",
+        };
+      }
+      throw error;
+    }
   };
 
-  const getUACS = async (papId: string, uacsCode: string) => {
-    const key = {
-      PK: `PAP#${papId}`,
-      SK: `UACS#${uacsCode}`,
+  const getAllUACS = async (): Promise<UACSInput[]> => {
+    const command = new ScanCommand({
+      TableName: tableName,
+      FilterExpression: "begins_with(PK, :pkPrefix) AND SK = :sk",
+      ExpressionAttributeValues: {
+        ":pkPrefix": { S: "UACS#" },
+        ":sk": { S: "METADATA" },
+      },
+    });
+
+    try {
+      const response = await dbClient.send(command);
+      return response.Items?.map((item) => unmarshall(item) as UACSInput) ?? [];
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const getUACSById = async (uacsId: string): Promise<UACSInput | null> => {
+    const command = new GetItemCommand({
+      TableName: tableName,
+      Key: {
+        PK: { S: `UACS#${uacsId}` },
+        SK: { S: "METADATA" },
+      },
+    });
+
+    const response = await dbClient.send(command);
+    return response.Item ? (unmarshall(response.Item) as UACSInput) : null;
+  };
+
+  const deleteUACS = async (uacsId: string) => {
+    const params = {
+      TableName: tableName,
+      Key: {
+        PK: { S: `UACS#${uacsId}` },
+        SK: { S: "METADATA" },
+      },
     };
 
-    const result = await dbClient.send(
-      new GetItemCommand({
-        TableName: tableName,
-        Key: marshall(key),
-      })
-    );
-
-    if (!result.Item) return null;
-
-    return unmarshall(result.Item);
+    try {
+      await dbClient.send(new DeleteItemCommand(params));
+      return { message: "UACS deleted successfully." };
+    } catch (error) {
+      throw error;
+    }
   };
 
   const getAllUACSByPAP = async (papId: string) => {
@@ -119,9 +169,11 @@ export const uacsService = () => {
 
   return {
     createUACS,
-    getUACS,
+    getAllUACS,
     getAllUACSByPAP,
     attachUACSToPAP,
     listUACSForPAP,
+    getUACSById,
+    deleteUACS,
   };
 };
