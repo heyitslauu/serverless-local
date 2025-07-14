@@ -2,6 +2,6 @@ export interface Office {
   officeId: string;
   name: string;
   location: string;
-  region: string;
+  region?: string;
   createdAt?: string;
 }

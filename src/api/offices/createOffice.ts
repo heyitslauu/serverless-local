@@ -11,12 +11,22 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
 
     const body = JSON.parse(event.body);
-    const newOffice = await createOffice(body);
+    const result = await createOffice(body);
+
+    if ("statusCode" in result && result.statusCode === 422) {
+      return {
+        statusCode: 422,
+        body: JSON.stringify({
+          error: "Validation Error",
+          message: result.message,
+        }),
+      };
+    }
     return {
       statusCode: 200,
       body: JSON.stringify({
         message: "Office created",
-        office: newOffice,
+        data: result,
       }),
     };
   } catch (error) {

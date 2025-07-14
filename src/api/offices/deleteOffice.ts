@@ -2,33 +2,29 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 
 import { officeService } from "../../services/officeService";
 
-const { getOfficeById } = officeService();
+const { deleteOffice } = officeService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     const officeId = event.pathParameters?.officeId;
+
     if (!officeId) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: "Missing officeId in path parameters.",
-        }),
-      };
+      throw new Error("officeId is required in pathParameters.");
     }
-    const result = await getOfficeById(officeId);
+
+    await deleteOffice(officeId);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Successfully retrieved office",
-        data: result,
+        message: "Successfully deleted an Office.",
       }),
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Failed to retrieve office.",
+        message: "Error deleting an Office.",
         error: error.message,
       }),
     };
