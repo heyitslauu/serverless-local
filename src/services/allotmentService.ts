@@ -13,7 +13,7 @@ import { type AllotmentFilters } from "../types/Allotment";
 
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-import { type Allotment } from "../types/Allotment";
+import { type Allotment, type AllotmentBreakdown } from "../types/Allotment";
 
 const checkOfficeAndPAPExist = async (
   breakdown: Allotment["breakdown"]
@@ -90,7 +90,102 @@ const checkOfficeAndPAPExist = async (
 };
 
 export function allotmentService() {
-  const downloadAllotment = async (body: Allotment) => {
+  const createAllotmentItem = async (body: {
+    allotmentId: string;
+    date: string;
+    particulars: string;
+    appropriationType: string;
+    bfarsBudgetType: string;
+    allotmentType: string;
+  }) => {
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
+    const {
+      allotmentId,
+      date,
+      particulars,
+      appropriationType,
+      bfarsBudgetType,
+      allotmentType,
+    } = body;
+
+    const upperAllotmentId = allotmentId.toUpperCase();
+
+    const item = marshall({
+      PK: `ALLOTMENT#${upperAllotmentId}`,
+      SK: `METADATA`,
+      allotmentId: upperAllotmentId,
+      date,
+      particulars: particulars.toUpperCase(),
+      appropriationType: appropriationType.toUpperCase(),
+      bfarsBudgetType: bfarsBudgetType.toUpperCase(),
+      allotmentType: allotmentType.toUpperCase(),
+      createdAt: new Date().toISOString(),
+    });
+
+    await dbClient.send(
+      new BatchWriteItemCommand({
+        RequestItems: {
+          [tableName]: [
+            {
+              PutRequest: {
+                Item: item,
+              },
+            },
+          ],
+        },
+      })
+    );
+
+    return { allotmentId: upperAllotmentId };
+  };
+
+  const postAllotmentBreakdown = async ({
+    allotmentId,
+    objectExpenditures,
+  }: {
+    allotmentId: string;
+    objectExpenditures: AllotmentBreakdown[];
+  }) => {
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
+    const upperAllotmentId = allotmentId.toUpperCase();
+    const timestamp = new Date().toISOString();
+
+    const batchWriteItems = objectExpenditures.map(
+      ({ fieldOfficeId, papId, uacsId, amount }) => ({
+        PutRequest: {
+          Item: marshall({
+            PK: `OFFICE#${fieldOfficeId}`,
+            SK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}`,
+            allotmentId: upperAllotmentId,
+            fieldOfficeId,
+            papId,
+            uacsId,
+            amount: amount * 100,
+            createdAt: timestamp,
+            status: "FOR-TRIAGE",
+          }),
+        },
+      })
+    );
+
+    for (let i = 0; i < batchWriteItems.length; i += 25) {
+      await dbClient.send(
+        new BatchWriteItemCommand({
+          RequestItems: {
+            [tableName]: batchWriteItems.slice(i, i + 25),
+          },
+        })
+      );
+    }
+
+    return {
+      allotmentId: upperAllotmentId,
+      data: objectExpenditures,
+      totalAlloted: objectExpenditures.reduce((sum, b) => sum + b.amount, 0),
+    };
+  };
+
+  const createAllotment = async (body: Allotment) => {
     const tableName = process.env.DYNAMODB_TABLE_NAME!;
 
     const {
@@ -127,7 +222,7 @@ export function allotmentService() {
             fieldOfficeId,
             papId,
             uacsId,
-            amount,
+            amount: amount * 100,
             particulars: particulars.toUpperCase(),
             appropriationType: appropriationType.toUpperCase(),
             bfarsBudgetType: bfarsBudgetType.toUpperCase(),
@@ -167,7 +262,7 @@ export function allotmentService() {
 
     return {
       allotmentId: upperAllotmentId,
-      recordsCreated: breakdown.length,
+      data: breakdown.length,
       totalAlloted: breakdown.reduce((sum, b) => sum + b.amount, 0),
       papBreakdown,
     };
@@ -265,6 +360,7 @@ export function allotmentService() {
 
   const getAllotmentById = async (allotmentId: string) => {
     const tableName = process.env.DYNAMODB_TABLE_NAME!;
+
     const command = new QueryCommand({
       TableName: tableName,
       IndexName: "AllotmentIdIndex",
@@ -277,18 +373,34 @@ export function allotmentService() {
       },
     });
 
-    const result = await dbClient.send(command);
-    const items = result.Items?.map((item) => unmarshall(item)) ?? [];
+    try {
+      const result = await dbClient.send(command);
+      const rawItems = result.Items ?? [];
 
-    const totalAlloted = items.reduce((sum, item) => {
-      const value = Number(item.PutRequest.Item.amount.N);
-      return sum + (isNaN(value) ? 0 : value / 100);
-    }, 0);
+      const items = rawItems.map((item) => {
+        const unmarshalled = unmarshall(item);
+        return {
+          ...unmarshalled,
+          amount: unmarshalled.amount ? unmarshalled.amount / 100 : 0,
+        };
+      });
 
-    return {
-      items,
-      totalAlloted,
-    };
+      const totalAlloted = items.reduce((sum, item) => {
+        const value = Number(item.amount);
+        return sum + (isNaN(value) ? 0 : value);
+      }, 0);
+
+      return {
+        items,
+        totalAlloted,
+      };
+    } catch (error) {
+      console.error("Error fetching allotments:", error);
+      return {
+        message: "Failed to retrieve allotments.",
+        error: (error as Error).message || "Unknown error",
+      };
+    }
   };
 
   const patchBreakdown = async (body: {
@@ -348,9 +460,11 @@ export function allotmentService() {
 
   return {
     getAllotmentByOffice,
-    downloadAllotment,
+    createAllotment,
     filterAllotments,
     getAllotmentById,
     patchBreakdown,
+    createAllotmentItem,
+    postAllotmentBreakdown,
   };
 }
