@@ -7,13 +7,13 @@ aws dynamodb create-table --cli-input-json file://src/db/schema.json --endpoint-
 # DELETE TABLE
 
 ```bash
-aws dynamodb delete-table --table-name EmpowerexFinance --endpoint-url http://localhost:8000
+aws dynamodb delete-table --table-name EmpowerexFinancedev --endpoint-url http://localhost:8000
 ```
 
 # SCAN TABLE
 
 ```bash
-aws dynamodb scan --table-name EmpowerexFinance --region ap-southeast-1 --endpoint-url http://localhost:8000
+aws dynamodb scan --table-name EmpowerexFinancedev --region ap-southeast-1 --endpoint-url http://localhost:8000
 ```
 
 # VIEW TABLES

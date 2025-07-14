@@ -16,6 +16,7 @@ build/
 
 # Optional: local env files
 .env
+.env.*
 
 # Logs
 *.log
