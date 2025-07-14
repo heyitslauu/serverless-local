@@ -6,16 +6,6 @@ const { createUACS } = uacsService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    const papId = event.pathParameters?.papId;
-    if (!papId) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: "Missing papId in path parameters.",
-        }),
-      };
-    }
-
     if (!event.body) {
       return {
         statusCode: 400,
@@ -26,13 +16,20 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
 
     const body = JSON.parse(event.body);
-    const newUACS = await createUACS(papId, body);
+    const result = await createUACS(body);
+
+    if ("statusCode" in result && result.statusCode === 422) {
+      return {
+        statusCode: 422,
+        body: JSON.stringify({ errors: result.message }),
+      };
+    }
 
     return {
       statusCode: 201,
       body: JSON.stringify({
         message: "UACS created successfully.",
-        uacs: newUACS,
+        uacs: result,
       }),
     };
   } catch (error: any) {
