@@ -9,7 +9,7 @@ import {
   QueryCommandInput,
 } from "@aws-sdk/client-dynamodb";
 
-import { type AllotmentFilters } from "../types/Allotment";
+import { type AllotmentFilters, AllotmentItem } from "../types/Allotment";
 
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
@@ -90,14 +90,7 @@ const checkOfficeAndPAPExist = async (
 };
 
 export function allotmentService() {
-  const createAllotmentItem = async (body: {
-    allotmentId: string;
-    date: string;
-    particulars: string;
-    appropriationType: string;
-    bfarsBudgetType: string;
-    allotmentType: string;
-  }) => {
+  const createAllotmentItem = async (body: AllotmentItem) => {
     const tableName = process.env.DYNAMODB_TABLE_NAME!;
     const {
       allotmentId,
@@ -106,11 +99,12 @@ export function allotmentService() {
       appropriationType,
       bfarsBudgetType,
       allotmentType,
+      totalAllotment,
     } = body;
 
     const upperAllotmentId = allotmentId.toUpperCase();
 
-    const item = marshall({
+    const itemObj = {
       PK: `ALLOTMENT#${upperAllotmentId}`,
       SK: `METADATA`,
       allotmentId: upperAllotmentId,
@@ -120,7 +114,11 @@ export function allotmentService() {
       bfarsBudgetType: bfarsBudgetType.toUpperCase(),
       allotmentType: allotmentType.toUpperCase(),
       createdAt: new Date().toISOString(),
-    });
+      totalAllotment: totalAllotment * 100,
+      status: "FOR-TRIAGE",
+    };
+
+    const item = marshall(itemObj);
 
     await dbClient.send(
       new BatchWriteItemCommand({
@@ -136,7 +134,7 @@ export function allotmentService() {
       })
     );
 
-    return { allotmentId: upperAllotmentId };
+    return { ...itemObj, totalAllotment: itemObj.totalAllotment / 100 };
   };
 
   const postAllotmentBreakdown = async ({

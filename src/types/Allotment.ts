@@ -30,3 +30,14 @@ export interface Allotment {
     | "completed";
   breakdown: AllotmentBreakdown[];
 }
+
+export interface AllotmentItem {
+  officeId: string;
+  allotmentId: string;
+  particulars: string;
+  date: string;
+  appropriationType: string;
+  bfarsBudgetType: string;
+  allotmentType: string;
+  totalAllotment: number;
+}
