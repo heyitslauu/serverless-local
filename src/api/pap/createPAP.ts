@@ -12,11 +12,20 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const body = JSON.parse(event.body);
     const result = await createPAP(body);
 
+    if ("statusCode" in result && result.statusCode === 422) {
+      return {
+        statusCode: 422,
+        body: JSON.stringify({
+          error: "Validation Error",
+          message: result.message,
+        }),
+      };
+    }
     return {
       statusCode: 200,
       body: JSON.stringify({
         message: "PAP created",
-        pap: result,
+        data: result,
       }),
     };
   } catch (error) {

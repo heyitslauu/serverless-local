@@ -32,12 +32,22 @@ export function papService() {
       ConditionExpression: "attribute_not_exists(PK)",
     });
 
-    await dbClient.send(command);
+    try {
+      await dbClient.send(command);
 
-    return {
-      message: "PAP created successfully.",
-      papId,
-    };
+      return {
+        message: "PAP created successfully.",
+        papId,
+      };
+    } catch (error: any) {
+      if (error.name === "ConditionalCheckFailedException") {
+        return {
+          statusCode: 422,
+          message: "PAP already exists.",
+        };
+      }
+      throw error;
+    }
   };
 
   const getPAPsByAllotment = async (allotmentId: string) => {

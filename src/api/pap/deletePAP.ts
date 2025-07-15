@@ -6,7 +6,8 @@ const { deletePAP } = papService();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    const papId = event.pathParameters?.id;
+    const papId = event.pathParameters?.papId;
+
     if (!papId) {
       return {
         statusCode: 400,
