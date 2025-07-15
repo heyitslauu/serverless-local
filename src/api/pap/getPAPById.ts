@@ -23,7 +23,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
     return {
       statusCode: 200,
-      body: JSON.stringify(pap),
+      body: JSON.stringify({
+        message: "Successfully retrieved PAP",
+        data: pap,
+      }),
     };
   } catch (error) {
     return {
