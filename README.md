@@ -105,6 +105,12 @@ To run `sls offline start`, you must have:
 serverless deploy --aws-profile {aws.profile}
 ```
 
+OR
+
+```bash
+sls deploy --aws-profile {aws.profile} --stage {aws.stage}
+```
+
 ```
 ⚠️ Note:
 Ensure that the {aws.profile} used for deployment has the necessary AWS IAM permissions. Without these, deployment may fail due to unauthorized actions when provisioning resources like Lambda, DynamoDB, or API Gateway. Please contact your AWS Administrator for these policies.
