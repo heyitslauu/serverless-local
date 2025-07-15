@@ -321,3 +321,11 @@ resources:
                             KeyType: RANGE
                       Projection:
                           ProjectionType: ALL
+                    - IndexName: MetadataIndex
+                      KeySchema:
+                          - AttributeName: SK
+                            KeyType: HASH
+                          - AttributeName: createdAt
+                            KeyType: RANGE
+                      Projection:
+                          ProjectionType: ALL

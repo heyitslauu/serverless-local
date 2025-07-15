@@ -298,26 +298,38 @@ export function allotmentService() {
     if (status && createdAtRange) {
       command = new QueryCommand({
         TableName: tableName,
-        IndexName: "StatusCreatedAtIndex",
+        IndexName: "MetadataIndex",
         KeyConditionExpression:
-          "#status = :status AND #createdAt BETWEEN :from AND :to",
+          "#sk = :sk AND #createdAt BETWEEN :from AND :to",
+        FilterExpression: "#status = :status",
         ExpressionAttributeNames: {
-          "#status": "status",
+          "#sk": "SK",
           "#createdAt": "createdAt",
+          "#status": "status",
         },
         ExpressionAttributeValues: {
-          ":status": { S: status.toUpperCase() },
+          ":sk": { S: "METADATA" },
           ":from": { S: createdAtRange.from },
           ":to": { S: createdAtRange.to },
+          ":status": { S: status.toUpperCase() },
         },
       });
     } else if (status) {
       command = new QueryCommand({
         TableName: tableName,
-        IndexName: "StatusIndex",
-        KeyConditionExpression: "#status = :status",
-        ExpressionAttributeNames: { "#status": "status" },
-        ExpressionAttributeValues: { ":status": { S: status.toUpperCase() } },
+        IndexName: "MetadataIndex",
+        KeyConditionExpression: "#sk = :sk",
+        FilterExpression: "begins_with(#pk, :pkPrefix) AND #status = :status",
+        ExpressionAttributeNames: {
+          "#sk": "SK",
+          "#pk": "PK",
+          "#status": "status",
+        },
+        ExpressionAttributeValues: {
+          ":sk": { S: "METADATA" },
+          ":pkPrefix": { S: "ALLOTMENT#" },
+          ":status": { S: status.toUpperCase() },
+        },
       });
     } else if (papId) {
       command = new QueryCommand({
@@ -345,7 +357,20 @@ export function allotmentService() {
         },
       });
     } else {
-      command = new ScanCommand({ TableName: tableName });
+      command = new QueryCommand({
+        TableName: tableName,
+        IndexName: "MetadataIndex",
+        KeyConditionExpression: "#sk = :sk",
+        FilterExpression: "begins_with(#pk, :pkPrefix)",
+        ExpressionAttributeNames: {
+          "#sk": "SK",
+          "#pk": "PK",
+        },
+        ExpressionAttributeValues: {
+          ":sk": { S: "METADATA" },
+          ":pkPrefix": { S: "ALLOTMENT#" },
+        },
+      });
     }
 
     const response = (await dbClient.send(command)) as
