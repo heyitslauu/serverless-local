@@ -13,7 +13,7 @@ export function papService() {
   const tableName = process.env.DYNAMODB_TABLE_NAME!;
 
   const createPAP = async (body: PAPInput) => {
-    const { papId, name, status } = body;
+    const { papId, name } = body;
 
     const timestamp = new Date().toISOString();
 
@@ -22,7 +22,6 @@ export function papService() {
       SK: "METADATA",
       papId,
       name,
-      status,
       createdAt: timestamp,
     };
 
@@ -105,14 +104,13 @@ export function papService() {
     if (!officeResult.Item) {
       throw new Error(`Office with ID "${officeId}" does not exist.`);
     }
-    const { papId, name, status } = body;
+    const { papId, name } = body;
 
     const item = {
       PK: `OFFICE#${officeId}`,
       SK: `PAP#${papId}`,
       papId: papId,
       name,
-      status,
       createdAt: new Date().toISOString(),
     };
 
