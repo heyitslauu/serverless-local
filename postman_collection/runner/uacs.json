@@ -1,0 +1,86 @@
+[
+  { "uacsId": "10101010", "name": "Cash - Collecting Officers" },
+  { "uacsId": "10101020", "name": "Petty Cash" },
+  {
+    "uacsId": "10102010",
+    "name": "Cash in Bank - Local Currency, Bangko Sentral ng Pilipinas"
+  },
+  {
+    "uacsId": "10102020",
+    "name": "Cash in Bank - Local Currency, Current Account"
+  },
+  {
+    "uacsId": "10102030",
+    "name": "Cash in Bank - Local Currency, Savings Account"
+  },
+  {
+    "uacsId": "10102040",
+    "name": "Cash in Bank - Local Currency, Time Deposits"
+  },
+  {
+    "uacsId": "10103010",
+    "name": "Cash in Bank - Foreign Currency, Bangko Sentral ng Pilipinas"
+  },
+  {
+    "uacsId": "10103020",
+    "name": "Cash in Bank - Foreign Currency, Current Account"
+  },
+  {
+    "uacsId": "10103030",
+    "name": "Cash in Bank - Foreign Currency, Savings Account"
+  },
+  {
+    "uacsId": "10103040",
+    "name": "Cash in Bank - Foreign Currency, Time Deposits"
+  },
+  { "uacsId": "10104010", "name": "Cash - Treasury/Agency Deposit, Regular" },
+  {
+    "uacsId": "10104020",
+    "name": "Cash - Treasury/Agency Deposit, Special Account"
+  },
+  { "uacsId": "10104030", "name": "Cash - Treasury/Agency Deposit, Trust" },
+  {
+    "uacsId": "10104040",
+    "name": "Cash - Modified Disbursement System (MDS), Regular"
+  },
+  {
+    "uacsId": "10104050",
+    "name": "Cash - Modified Disbursement System (MDS), Special Account"
+  },
+  {
+    "uacsId": "10104060",
+    "name": "Cash - Modified Disbursement System (MDS), Trust"
+  },
+  { "uacsId": "10104070", "name": "Cash - Tax Remittance Advice" },
+  {
+    "uacsId": "10104080",
+    "name": "Cash - Constructive Income and Other Remittances"
+  },
+  { "uacsId": "10104090", "name": "Cash - Constructive Disbursements" },
+  { "uacsId": "10105010", "name": "Treasury Bills" },
+  { "uacsId": "10105020", "name": "Time Deposits - Local Currency" },
+  { "uacsId": "10105030", "name": "Time Deposits - Foreign Currency" },
+  { "uacsId": "10201010", "name": "Financial Assets Held for Trading" },
+  {
+    "uacsId": "10201020",
+    "name": "Financial Assets Designated at Fair Value Through Surplus or Deficit"
+  },
+  {
+    "uacsId": "10201030",
+    "name": "Derivative Financial Assets Held for Trading"
+  },
+  {
+    "uacsId": "10201040",
+    "name": "Derivative Financial Assets Designated at Fair Value Through Surplus or Deficit"
+  },
+  { "uacsId": "10202010", "name": "Investments in Treasury Bills - Local" },
+  {
+    "uacsId": "10202011",
+    "name": "Allowance for Impairment - Investments in Treasury Bills - Local"
+  },
+  {
+    "uacsId": "10202012",
+    "name": "Allowance for Impairment - Investments in Treasury Bills - Local (Active)"
+  },
+  { "uacsId": "10202020", "name": "Investments in Treasury Bills - Foreign" }
+]

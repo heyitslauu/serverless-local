@@ -1,0 +1,119 @@
+[
+  {
+    "papId": "100000100001000",
+    "name": "General Management and Supervision"
+  },
+  {
+    "papId": "100000100002000",
+    "name": "Administration of Personnel Benefits"
+  },
+  {
+    "papId": "200000100001000",
+    "name": "Information and Communication Technology Service Management"
+  },
+  {
+    "papId": "200000100002000",
+    "name": "Social Marketing Services"
+  },
+  {
+    "papId": "200000100003000",
+    "name": "Social Technology Development and Enhancement"
+  },
+  {
+    "papId": "200000100004000",
+    "name": "Formulation and development of plans and policies"
+  },
+  {
+    "papId": "200000200001000",
+    "name": "National Household Targeting System for Poverty Reduction (NHTS-PR)"
+  },
+  {
+    "papId": "310100100001000",
+    "name": "Pantawid Pamilya (Implementation of Conditional Cash Transfer)"
+  },
+  {
+    "papId": "310100100002000",
+    "name": "Sustainable Livelihood Program"
+  },
+  {
+    "papId": "310100300001000",
+    "name": "KALAHI CIDSS - NATIONAL COMMUNITY DRIVEN DEVELOPMENT PROGRAM"
+  },
+  {
+    "papId": "320101100001000",
+    "name": "Provision of services for center-based clients"
+  },
+  {
+    "papId": "320102100001000",
+    "name": "Supplementary Feeding Program"
+  },
+  {
+    "papId": "320103100001000",
+    "name": "Social Pension for Indigent Senior Citizens"
+  },
+  {
+    "papId": "320103100002000",
+    "name": "IMPLEMENTATION OF R.A. 10868 or THE CENTENARIANS ACT OF 2016"
+  },
+  {
+    "papId": "320104100001000",
+    "name": "Protective services for individuals and families in especially difficult circumstances"
+  },
+  {
+    "papId": "320104100002000",
+    "name": "Assistance to Persons with Disability and Older Persons"
+  },
+  {
+    "papId": "320104200001000",
+    "name": "Comprehensive Project for Street Children, Street Families and IPs, Especially Badjaus"
+  },
+  {
+    "papId": "320104200002000",
+    "name": "Reducing Vulnerabilities of Children from Hunger and Malnutrition in ARMM or Bangsamoro Umpungan sa Nutrisyon"
+  },
+  {
+    "papId": "320104200003000",
+    "name": "Tax Reform Cash Transfer"
+  },
+  {
+    "papId": "320105100001000",
+    "name": "Services to Distressed Overseas Filipinos"
+  },
+  {
+    "papId": "320105100002000",
+    "name": "Services for Displaced Person (Deportees)"
+  },
+  {
+    "papId": "320105100003000",
+    "name": "Poverty and Reintegration Program for Trafficked Persons"
+  },
+  {
+    "papId": "330100100001000",
+    "name": "Disaster response and rehabilitation program"
+  },
+  {
+    "papId": "330100100002000",
+    "name": "National Resource Operation"
+  },
+  { "papId": "330100100003000", "name": "Quick Response Fund", "status": "1" },
+  {
+    "papId": "330100200001000",
+    "name": "Implementation and Monitoring of PAMANA Program Peace and Development"
+  },
+  {
+    "papId": "330100200002000",
+    "name": "Implementation and Monitoring of PAMANA Program DSWD/LGU Led Livelihood"
+  },
+  {
+    "papId": "340100100001000",
+    "name": "Standards-setting, licensing, accreditation and monitoring services"
+  },
+  {
+    "papId": "350100100001000",
+    "name": "Provision of technical/advisory assistance and related services"
+  },
+  {
+    "papId": "350100100002000",
+    "name": "Provision of capability training programs"
+  }
+]

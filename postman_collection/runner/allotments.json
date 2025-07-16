@@ -1,0 +1,542 @@
+[
+  {
+    "allotmentId": "A001",
+    "date": "2024-01-15",
+    "particulars": "Procurement of office supplies for Q1 operations",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 150000
+  },
+  {
+    "allotmentId": "A002",
+    "date": "2024-02-03",
+    "particulars": "Repair and maintenance of IT equipment",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 80000
+  },
+  {
+    "allotmentId": "A003",
+    "date": "2024-03-12",
+    "particulars": "Training and seminar expenses for staff development",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 120000
+  },
+  {
+    "allotmentId": "A004",
+    "date": "2024-01-28",
+    "particulars": "Purchase of new laptops for field officers",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 200000
+  },
+  {
+    "allotmentId": "A005",
+    "date": "2024-04-05",
+    "particulars": "Utility expenses for main office",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 50000
+  },
+  {
+    "allotmentId": "A006",
+    "date": "2024-05-10",
+    "particulars": "Vehicle maintenance and repair",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 60000
+  },
+  {
+    "allotmentId": "A007",
+    "date": "2024-06-18",
+    "particulars": "Procurement of medical supplies",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 90000
+  },
+  {
+    "allotmentId": "A008",
+    "date": "2024-07-07",
+    "particulars": "Renovation of conference room",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 250000
+  },
+  {
+    "allotmentId": "A009",
+    "date": "2024-08-14",
+    "particulars": "Purchase of printer ink and toners",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 30000
+  },
+  {
+    "allotmentId": "A010",
+    "date": "2024-09-02",
+    "particulars": "Subscription to cloud services",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 70000
+  },
+  {
+    "allotmentId": "A011",
+    "date": "2024-10-11",
+    "particulars": "Procurement of safety equipment",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 85000
+  },
+  {
+    "allotmentId": "A012",
+    "date": "2024-11-23",
+    "particulars": "Annual team building activity",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 95000
+  },
+  {
+    "allotmentId": "A013",
+    "date": "2024-12-05",
+    "particulars": "Procurement of office furniture",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 180000
+  },
+  {
+    "allotmentId": "A014",
+    "date": "2024-01-20",
+    "particulars": "Internet connectivity upgrade",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 65000
+  },
+  {
+    "allotmentId": "A015",
+    "date": "2024-02-17",
+    "particulars": "Procurement of cleaning materials",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 40000
+  },
+  {
+    "allotmentId": "A016",
+    "date": "2024-03-25",
+    "particulars": "Staff uniform allowance",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 55000
+  },
+  {
+    "allotmentId": "A017",
+    "date": "2024-04-13",
+    "particulars": "Procurement of air conditioning units",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 130000
+  },
+  {
+    "allotmentId": "A018",
+    "date": "2024-05-22",
+    "particulars": "Office renovation expenses",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 220000
+  },
+  {
+    "allotmentId": "A019",
+    "date": "2024-06-09",
+    "particulars": "Procurement of desktop computers",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 210000
+  },
+  {
+    "allotmentId": "A020",
+    "date": "2024-07-19",
+    "particulars": "Annual audit expenses",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 75000
+  },
+  {
+    "allotmentId": "A021",
+    "date": "2024-08-27",
+    "particulars": "Procurement of office tables and chairs",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 160000
+  },
+  {
+    "allotmentId": "A022",
+    "date": "2024-09-15",
+    "particulars": "Purchase of fire extinguishers",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 35000
+  },
+  {
+    "allotmentId": "A023",
+    "date": "2024-10-21",
+    "particulars": "Procurement of CCTV cameras",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 140000
+  },
+  {
+    "allotmentId": "A024",
+    "date": "2024-11-29",
+    "particulars": "Office Christmas party expenses",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 60000
+  },
+  {
+    "allotmentId": "A025",
+    "date": "2024-12-18",
+    "particulars": "Procurement of filing cabinets",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 70000
+  },
+  {
+    "allotmentId": "A026",
+    "date": "2024-01-08",
+    "particulars": "Purchase of office lighting fixtures",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 50000
+  },
+  {
+    "allotmentId": "A027",
+    "date": "2024-02-22",
+    "particulars": "Procurement of water dispensers",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 25000
+  },
+  {
+    "allotmentId": "A028",
+    "date": "2024-03-30",
+    "particulars": "Purchase of mobile phones for field staff",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 110000
+  },
+  {
+    "allotmentId": "A029",
+    "date": "2024-04-17",
+    "particulars": "Procurement of ID printers",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 60000
+  },
+  {
+    "allotmentId": "A030",
+    "date": "2024-05-25",
+    "particulars": "Purchase of office curtains and blinds",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 30000
+  },
+  {
+    "allotmentId": "A031",
+    "date": "2024-06-14",
+    "particulars": "Procurement of external hard drives",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 40000
+  },
+  {
+    "allotmentId": "A032",
+    "date": "2024-07-23",
+    "particulars": "Purchase of ergonomic chairs",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 90000
+  },
+  {
+    "allotmentId": "A033",
+    "date": "2024-08-31",
+    "particulars": "Procurement of whiteboards and markers",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 20000
+  },
+  {
+    "allotmentId": "A034",
+    "date": "2024-09-19",
+    "particulars": "Purchase of projectors for meeting rooms",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 75000
+  },
+  {
+    "allotmentId": "A035",
+    "date": "2024-10-27",
+    "particulars": "Procurement of office partitions",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 120000
+  },
+  {
+    "allotmentId": "A036",
+    "date": "2024-11-15",
+    "particulars": "Purchase of office plants and decorations",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 15000
+  },
+  {
+    "allotmentId": "A037",
+    "date": "2024-12-09",
+    "particulars": "Procurement of backup power supply",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 95000
+  },
+  {
+    "allotmentId": "A038",
+    "date": "2024-01-27",
+    "particulars": "Purchase of office calendars and planners",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 10000
+  },
+  {
+    "allotmentId": "A039",
+    "date": "2024-02-14",
+    "particulars": "Procurement of office signage",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 12000
+  },
+  {
+    "allotmentId": "A040",
+    "date": "2024-03-18",
+    "particulars": "Purchase of office clocks",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 8000
+  },
+  {
+    "allotmentId": "A041",
+    "date": "2024-04-22",
+    "particulars": "Procurement of office shelves",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Capital Outlay",
+    "allotmentType": "Regular",
+    "totalAllotment": 35000
+  },
+  {
+    "allotmentId": "A042",
+    "date": "2024-05-29",
+    "particulars": "Purchase of office fans",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 7000
+  },
+  {
+    "allotmentId": "A043",
+    "date": "2024-06-21",
+    "particulars": "Procurement of office whiteboards",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 9000
+  },
+  {
+    "allotmentId": "A044",
+    "date": "2024-07-30",
+    "particulars": "Purchase of office extension cords",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 5000
+  },
+  {
+    "allotmentId": "A045",
+    "date": "2024-08-16",
+    "particulars": "Procurement of office staplers and punchers",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 6000
+  },
+  {
+    "allotmentId": "A046",
+    "date": "2024-09-24",
+    "particulars": "Purchase of office trash bins",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 4000
+  },
+  {
+    "allotmentId": "A047",
+    "date": "2024-10-13",
+    "particulars": "Procurement of office envelopes",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 3000
+  },
+  {
+    "allotmentId": "A048",
+    "date": "2024-11-19",
+    "particulars": "Purchase of office paper clips",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 2000
+  },
+  {
+    "allotmentId": "A049",
+    "date": "2024-12-13",
+    "particulars": "Procurement of office folders",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 1000
+  },
+  {
+    "allotmentId": "A050",
+    "date": "2024-01-18",
+    "particulars": "Purchase of office binders",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 500
+  },
+  {
+    "allotmentId": "A051",
+    "date": "2024-02-25",
+    "particulars": "Procurement of office calculators",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 3000
+  },
+  {
+    "allotmentId": "A052",
+    "date": "2024-03-14",
+    "particulars": "Purchase of office scissors",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 1500
+  },
+  {
+    "allotmentId": "A053",
+    "date": "2024-04-28",
+    "particulars": "Procurement of office glue sticks",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 800
+  },
+  {
+    "allotmentId": "A054",
+    "date": "2024-05-17",
+    "particulars": "Purchase of office correction tapes",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 600
+  },
+  {
+    "allotmentId": "A055",
+    "date": "2024-06-26",
+    "particulars": "Procurement of office sticky notes",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 1200
+  },
+  {
+    "allotmentId": "A056",
+    "date": "2024-07-15",
+    "particulars": "Purchase of office tape dispensers",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 900
+  },
+  {
+    "allotmentId": "A057",
+    "date": "2024-08-22",
+    "particulars": "Procurement of office rulers",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 700
+  },
+  {
+    "allotmentId": "A058",
+    "date": "2024-09-11",
+    "particulars": "Purchase of office erasers",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 400
+  },
+  {
+    "allotmentId": "A059",
+    "date": "2024-10-19",
+    "particulars": "Procurement of office sharpeners",
+    "appropriationType": "General Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Regular",
+    "totalAllotment": 300
+  },
+  {
+    "allotmentId": "A060",
+    "date": "2024-11-28",
+    "particulars": "Purchase of office push pins",
+    "appropriationType": "Special Fund",
+    "bfarsBudgetType": "Maintenance",
+    "allotmentType": "Supplemental",
+    "totalAllotment": 200
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "officeId": "CENTRAL",
+    "name": "Central Office",
+    "location": "IBP Road, Batasan, Quezon City"
+  },
+  {
+    "officeId": "NCR",
+    "name": "NCR Field Office",
+    "location": "389 San Rafael St., Legarda, Manila"
+  },
+  {
+    "officeId": "CAR",
+    "name": "CAR Field Office",
+    "location": "#40 North Drive, Baguio City"
+  },
+  {
+    "officeId": "I",
+    "name": "Field Office I",
+    "location": "Quezon Avenue, City of San Fernando, La Union"
+  },
+  {
+    "officeId": "II",
+    "name": "Field Office II",
+    "location": "Carig, Tuguegarao City, Cagayan"
+  },
+  {
+    "officeId": "III",
+    "name": "Field Office III",
+    "location": "Maimpis, City of San Fernando, Pampanga"
+  },
+  {
+    "officeId": "IV-A",
+    "name": "Field Office IV-A",
+    "location": "Alabang-Zapote Road, Barangay Alabang, Muntinlupa City"
+  },
+  {
+    "officeId": "IV-B",
+    "name": "Field Office IV-B (MIMAROPA)",
+    "location": "No. 3, Brgy. Pag-asa, Sta. Cruz, Occidental Mindoro"
+  },
+  {
+    "officeId": "V",
+    "name": "Field Office V",
+    "location": "Legazpi City, Albay"
+  },
+  {
+    "officeId": "VI",
+    "name": "Field Office VI",
+    "location": "Molo, Iloilo City"
+  },
+  {
+    "officeId": "VII",
+    "name": "Field Office VII",
+    "location": "Corner MJ Cuenco Ave. and Gen. Maxilom Ave., Cebu City"
+  },
+  {
+    "officeId": "VIII",
+    "name": "Field Office VIII",
+    "location": "Candahug, Palo, Leyte"
+  },
+  {
+    "officeId": "IX",
+    "name": "Field Office IX",
+    "location": "General Vicente Alvarez St., Zamboanga City"
+  },
+  {
+    "officeId": "X",
+    "name": "Field Office X",
+    "location": "Masterson Avenue, Upper Carmen, Cagayan de Oro City"
+  },
+  {
+    "officeId": "XI",
+    "name": "Field Office XI",
+    "location": "R. Magsaysay Ave., Davao City"
+  },
+  {
+    "officeId": "XII",
+    "name": "Field Office XII",
+    "location": "Koronadal City, South Cotabato"
+  },
+  {
+    "officeId": "CARAGA",
+    "name": "CARAGA Field Office",
+    "location": "Capitol Site, Butuan City"
+  },
+  {
+    "officeId": "BARMM",
+    "name": "BARMM Office",
+    "location": "Cotabato City"
+  }
+]
