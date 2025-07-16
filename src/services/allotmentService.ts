@@ -7,6 +7,7 @@ import {
   BatchWriteItemCommand,
   QueryCommand,
   QueryCommandInput,
+  ScanCommandInput,
 } from "@aws-sdk/client-dynamodb";
 
 import { type AllotmentFilters, AllotmentItem } from "../types/Allotment";
@@ -291,94 +292,123 @@ export function allotmentService() {
   };
 
   const filterAllotments = async (filters: AllotmentFilters = {}) => {
-    const { status, createdAtRange, papId, allotmentId, search } = filters;
-    const tableName = process.env.DYNAMODB_TABLE_NAME!;
-    let command;
+    const {
+      status,
+      createdAtRange,
+      papId,
+      allotmentId,
+      search,
+      lastEvaluatedKey,
+    } = filters;
 
-    if (status && createdAtRange) {
-      command = new QueryCommand({
-        TableName: tableName,
-        IndexName: "MetadataIndex",
-        KeyConditionExpression:
-          "#sk = :sk AND #createdAt BETWEEN :from AND :to",
-        FilterExpression: "#status = :status",
-        ExpressionAttributeNames: {
-          "#sk": "SK",
-          "#createdAt": "createdAt",
-          "#status": "status",
-        },
-        ExpressionAttributeValues: {
-          ":sk": { S: "METADATA" },
-          ":from": { S: createdAtRange.from },
-          ":to": { S: createdAtRange.to },
-          ":status": { S: status.toUpperCase() },
-        },
-      });
-    } else if (status) {
-      command = new QueryCommand({
-        TableName: tableName,
-        IndexName: "MetadataIndex",
-        KeyConditionExpression: "#sk = :sk",
-        FilterExpression: "begins_with(#pk, :pkPrefix) AND #status = :status",
-        ExpressionAttributeNames: {
-          "#sk": "SK",
-          "#pk": "PK",
-          "#status": "status",
-        },
-        ExpressionAttributeValues: {
-          ":sk": { S: "METADATA" },
-          ":pkPrefix": { S: "ALLOTMENT#" },
-          ":status": { S: status.toUpperCase() },
-        },
-      });
-    } else if (papId) {
-      command = new QueryCommand({
-        TableName: tableName,
-        IndexName: "PapIdIndex",
-        KeyConditionExpression: "#papId = :papId",
-        ExpressionAttributeNames: { "#papId": "papId" },
-        ExpressionAttributeValues: { ":papId": { S: papId.toUpperCase() } },
-      });
-    } else if (allotmentId) {
-      command = new QueryCommand({
-        TableName: tableName,
-        IndexName: "AllotmentIdIndex",
-        KeyConditionExpression: "#allotmentId = :allotmentId",
-        ExpressionAttributeNames: { "#allotmentId": "allotmentId" },
-        ExpressionAttributeValues: { ":allotmentId": { S: allotmentId } },
-      });
-    } else if (search) {
-      command = new ScanCommand({
-        TableName: tableName,
-        FilterExpression:
-          "contains(allotmentId, :search) OR contains(particulars, :search)",
-        ExpressionAttributeValues: {
-          ":search": { S: search.toUpperCase() },
-        },
-      });
-    } else {
-      command = new QueryCommand({
-        TableName: tableName,
-        IndexName: "MetadataIndex",
-        KeyConditionExpression: "#sk = :sk",
-        FilterExpression: "begins_with(#pk, :pkPrefix)",
-        ExpressionAttributeNames: {
-          "#sk": "SK",
-          "#pk": "PK",
-        },
-        ExpressionAttributeValues: {
-          ":sk": { S: "METADATA" },
-          ":pkPrefix": { S: "ALLOTMENT#" },
-        },
-      });
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
+    const limit = 50;
+
+    const scanParams: ScanCommandInput = {
+      TableName: tableName,
+      Limit: limit,
+      ...(lastEvaluatedKey && { ExclusiveStartKey: lastEvaluatedKey }),
+      FilterExpression: "",
+      ExpressionAttributeNames: {},
+      ExpressionAttributeValues: {},
+    };
+
+    const filterExpressions: string[] = [];
+
+    // Normalize filters
+    if (status) {
+      filterExpressions.push("#status = :status");
+      scanParams.ExpressionAttributeNames!["#status"] = "status";
+      scanParams.ExpressionAttributeValues![":status"] = {
+        S: status.toUpperCase(),
+      };
     }
 
-    const response = (await dbClient.send(command)) as
-      | QueryCommandOutput
-      | ScanCommandOutput;
+    if (createdAtRange?.from && createdAtRange?.to) {
+      filterExpressions.push("#createdAt BETWEEN :from AND :to");
+      scanParams.ExpressionAttributeNames!["#createdAt"] = "createdAt";
+      scanParams.ExpressionAttributeValues![":from"] = {
+        S: createdAtRange.from,
+      };
+      scanParams.ExpressionAttributeValues![":to"] = { S: createdAtRange.to };
+    }
 
-    const items = (response.Items ?? []).map((item) => unmarshall(item));
-    return items;
+    if (papId) {
+      filterExpressions.push("#papId = :papId");
+      scanParams.ExpressionAttributeNames!["#papId"] = "papId";
+      scanParams.ExpressionAttributeValues![":papId"] = {
+        S: papId.toUpperCase(),
+      };
+    }
+
+    if (allotmentId) {
+      filterExpressions.push("#allotmentId = :allotmentId");
+      scanParams.ExpressionAttributeNames!["#allotmentId"] = "allotmentId";
+      scanParams.ExpressionAttributeValues![":allotmentId"] = {
+        S: allotmentId,
+      };
+    }
+
+    if (search) {
+      filterExpressions.push(
+        "contains(allotmentId, :search) OR contains(particulars, :search)"
+      );
+      scanParams.ExpressionAttributeValues![":search"] = {
+        S: search.toUpperCase(),
+      };
+    }
+
+    // Combine filter expressions
+    if (filterExpressions.length > 0) {
+      scanParams.FilterExpression = filterExpressions.join(" AND ");
+
+      const response = await dbClient.send(new ScanCommand(scanParams));
+
+      const items = (response.Items ?? [])
+        .map((item) => unmarshall(item))
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+      return {
+        items,
+        lastEvaluatedKey: response.LastEvaluatedKey
+          ? unmarshall(response.LastEvaluatedKey)
+          : null,
+        totalCount: items.length,
+      };
+    } else {
+      const command = new ScanCommand({
+        TableName: tableName,
+        FilterExpression: "begins_with(#pk, :pkPrefix)",
+        ExpressionAttributeNames: {
+          "#pk": "PK",
+        },
+        ExpressionAttributeValues: {
+          ":pkPrefix": { S: "ALLOTMENT#" },
+        },
+        // Limit: 50,
+        ...(lastEvaluatedKey && { ExclusiveStartKey: lastEvaluatedKey }),
+      });
+
+      const response = await dbClient.send(command);
+
+      const items = (response.Items ?? [])
+        .map((item) => unmarshall(item))
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+
+      return {
+        items,
+        lastEvaluatedKey: response.LastEvaluatedKey
+          ? unmarshall(response.LastEvaluatedKey)
+          : null,
+        totalCount: items.length,
+      };
+    }
   };
 
   const getAllotmentById = async (allotmentId: string) => {
@@ -400,21 +430,24 @@ export function allotmentService() {
       const result = await dbClient.send(command);
       const rawItems = result.Items ?? [];
 
-      const items = rawItems.map((item) => {
-        const unmarshalled = unmarshall(item);
-        return {
-          ...unmarshalled,
-          amount: unmarshalled.amount ? unmarshalled.amount / 100 : 0,
-        };
-      });
+      const items = rawItems.map((item) => unmarshall(item));
 
-      const totalAlloted = items.reduce((sum, item) => {
-        const value = Number(item.amount);
-        return sum + (isNaN(value) ? 0 : value);
+      // Separate parent metadata and breakdowns
+      const parent = items.find((item) => item.SK === "METADATA");
+      const breakdowns = items
+        .filter((item) => item.SK !== "METADATA")
+        .map((item) => ({
+          ...item,
+          amount: Number(item.amount) / 100,
+        }));
+
+      const totalAlloted = breakdowns.reduce((sum, item) => {
+        return sum + (isNaN(item.amount) ? 0 : item.amount);
       }, 0);
 
       return {
-        items,
+        ...parent,
+        breakdowns,
         totalAlloted,
       };
     } catch (error) {

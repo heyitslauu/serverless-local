@@ -5,8 +5,8 @@ export interface AllotmentFilters {
   allotmentId?: string;
   search?: string;
   particulars?: string;
+  lastEvaluatedKey?: Record<string, any> | null;
 }
-
 export interface AllotmentBreakdown {
   fieldOfficeId: string;
   papId: string;

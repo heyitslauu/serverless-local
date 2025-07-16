@@ -17,13 +17,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       particulars: query.particulars,
       search: query.search,
     };
-    const allotments = await filterAllotments(filters);
+    const response = await filterAllotments(filters);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         message: "Successfully retrieved all allotments.",
-        data: allotments,
+        data: response.items,
+        lastEvaluatedKey: response.lastEvaluatedKey,
+        totalCount: response.totalCount,
       }),
     };
   } catch (error: any) {
