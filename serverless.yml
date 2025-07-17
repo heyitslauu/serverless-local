@@ -8,11 +8,14 @@ provider:
     stage: ${opt:stage, 'dev'}
     region: ap-southeast-1
     architecture: x86_64
-    apiGateway:
-        stage: ${self:provider.stage}
+    httpApi:
+        cors:
+            allowedOrigins: ["*"]
+            allowedHeaders: ["Content-Type", "Authorization"]
+            allowedMethods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+            maxAge: 300
     environment:
         DYNAMODB_TABLE_NAME: EmpowerexFinance${self:provider.stage}
-
     iam:
         role:
             statements:
@@ -29,8 +32,8 @@ provider:
                   Resource:
                       - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/EmpowerexFinance${self:provider.stage}
                       - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/EmpowerexFinance${self:provider.stage}/index/*
+
 custom:
-    empowerexFinance: EmpowerexFinance
     dynamodbTableName: EmpowerexFinance${self:provider.stage}
 
 plugins:
@@ -38,195 +41,150 @@ plugins:
     - serverless-dynamodb-local
 
 functions:
-    #<====================== OFFICES ======================>
+    # Offices
     createOffice:
         handler: src/api/offices/createOffice.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices
                   method: POST
 
     getOffices:
         handler: src/api/offices/getOffices.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices
                   method: GET
 
     getOfficeById:
         handler: src/api/offices/getOfficeById.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}
                   method: GET
 
     deleteOffice:
         handler: src/api/offices/deleteOffice.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}
                   method: DELETE
 
     patchOffice:
         handler: src/api/offices/patchOffice.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}
                   method: PATCH
 
+    # PAP
     getPAPByOffice:
         handler: src/api/pap/getPAPByOffice.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}/paps
                   method: GET
 
     attachPAPToOffice:
         handler: src/api/pap/attachPAP.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}/paps
                   method: POST
 
-    #<====================== OFFICES ========================>
-
-    #<====================== PAP ============================>
     createPAP:
         handler: src/api/pap/createPAP.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /paps
                   method: POST
 
     getAllPAP:
         handler: src/api/pap/getAllPAP.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /paps
                   method: GET
 
     deletePAP:
         handler: src/api/pap/deletePAP.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /paps/{papId}
                   method: DELETE
 
     getPAPById:
         handler: src/api/pap/getPAPById.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /paps/{papId}
                   method: GET
 
-    #<====================== PAP ============================>
-
-    #<====================== UACS ===========================>
+    # UACS
     attachUACSToPAP:
         handler: src/api/uacs/attachUACS.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}/paps/{papId}/uacs
                   method: POST
 
     listUACSForPAP:
         handler: src/api/uacs/getUACS.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /offices/{officeId}/paps/{papId}/uacs
                   method: GET
 
     createUACS:
         handler: src/api/uacs/createUACS.handler
-        memorySize: 256
-        timeout: 10
         events:
-            - http:
+            - httpApi:
                   path: /uacs
                   method: POST
 
     deleteUACS:
         handler: src/api/uacs/deleteUACS.handler
-        memorySize: 256
-        timeout: 10
         events:
-            - http:
+            - httpApi:
                   path: /uacs/{uacsId}
                   method: DELETE
 
     getAllUACS:
         handler: src/api/uacs/getAllUACS.handler
-        memorySize: 256
-        timeout: 10
         events:
-            - http:
+            - httpApi:
                   path: /uacs
                   method: GET
 
-    #<====================== UACS ===========================>
-
-    #<====================== ALLOTMENT ======================>
-
+    # Allotments
     createAllotmentItem:
         handler: src/api/allotments/createAllotmentItem.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /create-allotment-item
                   method: POST
 
     postAllotmentBreakdown:
         handler: src/api/allotments/postAllotmentBreakdown.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
+            - httpApi:
                   path: /create-allotment-breakdown
                   method: POST
 
     createAllotment:
         handler: src/api/allotments/createAllotment.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
         events:
-            - http:
-                  path: allotments
+            - httpApi:
+                  path: /allotment
                   method: POST
 
     getAllotmentsByOffice:
         handler: src/api/allotments/getAllotmentByOffice.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
+        memorySize: 256
+        timeout: 10
         events:
-            - http:
-                  path: /allotments/office/{officeId}
+            - httpApi:
+                  path: /allotment
                   method: GET
 
     getAllotments:
@@ -234,27 +192,46 @@ functions:
         memorySize: 256 # mb
         timeout: 10 # seconds
         events:
-            - http:
-                  path: allotments
+            - httpApi:
+                  path: /allotments
                   method: GET
 
     getAllotmentById:
         handler: src/api/allotments/getAllotmentById.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
+        memorySize: 256
+        timeout: 10
         events:
-            - http:
+            - httpApi:
                   path: /allotments/{allotmentId}
                   method: GET
 
+    patchAllotmentDetails:
+        handler: src/api/allotments/patchAllotmentDetails.handler
+        events:
+            - httpApi:
+                  path: /allotments/{allotmentId}
+                  method: PATCH
+
+    updateAllotmentStatus:
+        handler: src/api/allotments/updateAllotmentStatus.handler
+        events:
+            - httpApi:
+                  path: /allotments/{allotmentId}/status
+                  method: PATCH
+
     patchAllotmentBreakdown:
         handler: src/api/allotments/patchAllotmentBreakdown.handler
-        memorySize: 256
-        timeout: 5
         events:
-            - http:
+            - httpApi:
                   path: /allotments/{allotmentId}/breakdown
                   method: PATCH
+
+    deleteAllotmentBreakdown:
+        handler: src/api/allotments/deleteAllotmentBreakdown.handler
+        events:
+            - httpApi:
+                  path: /allotments/delete-breakdown
+                  method: POST
 
 #<====================== ALLOTMENT ======================>
 resources:
