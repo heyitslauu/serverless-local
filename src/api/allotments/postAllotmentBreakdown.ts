@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     });
 
     return {
-      statusCode: 200,
+      statusCode: 201,
       body: JSON.stringify(result),
     };
   } catch (error) {
