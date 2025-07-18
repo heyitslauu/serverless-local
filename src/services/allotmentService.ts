@@ -556,6 +556,7 @@ export function allotmentService() {
 
       return {
         ...parent,
+        totalAllotment: parent.totalAllotment / 100,
         breakdowns: sortedBreakdowns,
         totalAlloted,
       };
