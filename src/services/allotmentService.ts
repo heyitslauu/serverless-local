@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import dbClient from "../db/dbClient";
 import {
   QueryCommandOutput,
@@ -8,9 +10,14 @@ import {
   QueryCommand,
   QueryCommandInput,
   ScanCommandInput,
+  DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
 
-import { type AllotmentFilters, AllotmentItem } from "../types/Allotment";
+import {
+  type AllotmentFilters,
+  AllotmentItem,
+  AllotmentRecord,
+} from "../types/Allotment";
 
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
@@ -101,6 +108,7 @@ export function allotmentService() {
       bfarsBudgetType,
       allotmentType,
       totalAllotment,
+      exFlow: [],
     } = body;
 
     const upperAllotmentId = allotmentId.toUpperCase();
@@ -117,6 +125,7 @@ export function allotmentService() {
       createdAt: new Date().toISOString(),
       totalAllotment: totalAllotment * 100,
       status: "FOR-TRIAGE",
+      exFlow: [],
     };
 
     const item = marshall(itemObj);
@@ -145,6 +154,7 @@ export function allotmentService() {
     allotmentId: string;
     objectExpenditures: AllotmentBreakdown[];
   }) => {
+    const uniqueId = uuidv4();
     const tableName = process.env.DYNAMODB_TABLE_NAME!;
     const upperAllotmentId = allotmentId.toUpperCase();
     const timestamp = new Date().toISOString();
@@ -154,14 +164,14 @@ export function allotmentService() {
         PutRequest: {
           Item: marshall({
             PK: `OFFICE#${fieldOfficeId}`,
-            SK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}`,
+            SK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}#${uniqueId}`,
+            parentSK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}`,
             allotmentId: upperAllotmentId,
             fieldOfficeId,
             papId,
             uacsId,
             amount: amount * 100,
             createdAt: timestamp,
-            status: "FOR-TRIAGE",
           }),
         },
       })
@@ -177,9 +187,23 @@ export function allotmentService() {
       );
     }
 
+    const formattedExpenditures = objectExpenditures.map(
+      ({ fieldOfficeId, papId, uacsId, amount }) => ({
+        PK: `OFFICE#${fieldOfficeId}`,
+        SK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}#${uniqueId}`,
+        parentSK: `ALLOTMENT#${upperAllotmentId}#PAP#${papId}#UACS#${uacsId}`,
+        allotmentId: upperAllotmentId,
+        fieldOfficeId,
+        papId,
+        uacsId,
+        amount,
+        createdAt: timestamp,
+      })
+    );
+
     return {
       allotmentId: upperAllotmentId,
-      data: objectExpenditures,
+      data: formattedExpenditures,
       totalAlloted: objectExpenditures.reduce((sum, b) => sum + b.amount, 0),
     };
   };
@@ -302,65 +326,57 @@ export function allotmentService() {
     } = filters;
 
     const tableName = process.env.DYNAMODB_TABLE_NAME!;
-    const limit = 50;
+
+    const attributeNames: Record<string, string> = {};
+    const attributeValues: Record<string, any> = {};
 
     const scanParams: ScanCommandInput = {
       TableName: tableName,
-      Limit: limit,
       ...(lastEvaluatedKey && { ExclusiveStartKey: lastEvaluatedKey }),
-      FilterExpression: "",
-      ExpressionAttributeNames: {},
-      ExpressionAttributeValues: {},
     };
 
     const filterExpressions: string[] = [];
 
-    // Normalize filters
     if (status) {
       filterExpressions.push("#status = :status");
-      scanParams.ExpressionAttributeNames!["#status"] = "status";
-      scanParams.ExpressionAttributeValues![":status"] = {
-        S: status.toUpperCase(),
-      };
+      attributeNames["#status"] = "status";
+      attributeValues[":status"] = { S: status.toUpperCase() };
     }
 
     if (createdAtRange?.from && createdAtRange?.to) {
       filterExpressions.push("#createdAt BETWEEN :from AND :to");
-      scanParams.ExpressionAttributeNames!["#createdAt"] = "createdAt";
-      scanParams.ExpressionAttributeValues![":from"] = {
-        S: createdAtRange.from,
-      };
-      scanParams.ExpressionAttributeValues![":to"] = { S: createdAtRange.to };
+      attributeNames["#createdAt"] = "createdAt";
+      attributeValues[":from"] = { S: createdAtRange.from };
+      attributeValues[":to"] = { S: createdAtRange.to };
     }
 
     if (papId) {
       filterExpressions.push("#papId = :papId");
-      scanParams.ExpressionAttributeNames!["#papId"] = "papId";
-      scanParams.ExpressionAttributeValues![":papId"] = {
-        S: papId.toUpperCase(),
-      };
+      attributeNames["#papId"] = "papId";
+      attributeValues[":papId"] = { S: papId.toUpperCase() };
     }
 
     if (allotmentId) {
       filterExpressions.push("#allotmentId = :allotmentId");
-      scanParams.ExpressionAttributeNames!["#allotmentId"] = "allotmentId";
-      scanParams.ExpressionAttributeValues![":allotmentId"] = {
-        S: allotmentId,
-      };
+      attributeNames["#allotmentId"] = "allotmentId";
+      attributeValues[":allotmentId"] = { S: allotmentId };
     }
 
     if (search) {
       filterExpressions.push(
         "contains(allotmentId, :search) OR contains(particulars, :search)"
       );
-      scanParams.ExpressionAttributeValues![":search"] = {
-        S: search.toUpperCase(),
-      };
+      attributeValues[":search"] = { S: search.toUpperCase() };
     }
 
     // Combine filter expressions
     if (filterExpressions.length > 0) {
       scanParams.FilterExpression = filterExpressions.join(" AND ");
+      scanParams.ExpressionAttributeValues = attributeValues;
+
+      if (Object.keys(attributeNames).length > 0) {
+        scanParams.ExpressionAttributeNames = attributeNames;
+      }
 
       const response = await dbClient.send(new ScanCommand(scanParams));
 
@@ -388,7 +404,6 @@ export function allotmentService() {
         ExpressionAttributeValues: {
           ":pkPrefix": { S: "ALLOTMENT#" },
         },
-        // Limit: 50,
         ...(lastEvaluatedKey && { ExclusiveStartKey: lastEvaluatedKey }),
       });
 
@@ -411,6 +426,80 @@ export function allotmentService() {
     }
   };
 
+  const updateAllotmentStatus = async (
+    allotmentId: string,
+    body: {
+      status:
+        | "for-triage"
+        | "for-processing"
+        | "for-peer-review"
+        | "for-approval"
+        | "approved"
+        | "rejected";
+      remarks?: string;
+    }
+  ) => {
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
+    const { status, remarks } = body;
+
+    const upperStatus = status.toUpperCase();
+    const updateExpressions: string[] = ["#status = :status"];
+    const expressionAttributeNames: Record<string, string> = {
+      "#status": "status",
+    };
+    const expressionAttributeValues: Record<string, any> = {
+      ":status": upperStatus,
+    };
+
+    if (remarks) {
+      updateExpressions.push("#remarks = :remarks");
+      expressionAttributeNames["#remarks"] = "remarks";
+      expressionAttributeValues[":remarks"] = remarks;
+    }
+
+    const updateExpression = `SET ${updateExpressions.join(", ")}`;
+
+    const command = new QueryCommand({
+      TableName: tableName,
+      KeyConditionExpression: "PK = :pk AND SK = :sk",
+      ExpressionAttributeValues: {
+        ":pk": { S: `ALLOTMENT#${allotmentId.toUpperCase()}` },
+        ":sk": { S: "METADATA" },
+      },
+    });
+
+    const result = await dbClient.send(command);
+
+    if (!result.Items || result.Items.length === 0) {
+      throw new Error(`Allotment with ID '${allotmentId}' not found.`);
+    }
+
+    const updateCommand = new BatchWriteItemCommand({
+      RequestItems: {
+        [tableName]: [
+          {
+            PutRequest: {
+              Item: marshall({
+                ...unmarshall(result.Items[0]),
+                status: upperStatus,
+                ...(remarks && { remarks }),
+                updatedAt: new Date().toISOString(),
+              }),
+            },
+          },
+        ],
+      },
+    });
+
+    await dbClient.send(updateCommand);
+
+    return {
+      allotmentId,
+      status: upperStatus,
+      ...(remarks && { remarks }),
+    };
+  };
+
   const getAllotmentById = async (allotmentId: string) => {
     const tableName = process.env.DYNAMODB_TABLE_NAME!;
 
@@ -428,26 +517,46 @@ export function allotmentService() {
 
     try {
       const result = await dbClient.send(command);
-      const rawItems = result.Items ?? [];
+
+      if (!result.Items || result.Items.length === 0) {
+        return null;
+      }
+
+      const rawItems = result.Items;
 
       const items = rawItems.map((item) => unmarshall(item));
 
-      // Separate parent metadata and breakdowns
       const parent = items.find((item) => item.SK === "METADATA");
-      const breakdowns = items
+      const breakdowns: Partial<AllotmentRecord>[] = items
         .filter((item) => item.SK !== "METADATA")
         .map((item) => ({
           ...item,
           amount: Number(item.amount) / 100,
         }));
 
+      const sortedBreakdowns = breakdowns.sort((a, b) => {
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      });
+
       const totalAlloted = breakdowns.reduce((sum, item) => {
         return sum + (isNaN(item.amount) ? 0 : item.amount);
       }, 0);
 
+      if (parent?.exFlow) {
+        parent.exFlow = parent.exFlow.sort(
+          (a: { createdAt: string }, b: { createdAt: string }) => {
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          }
+        );
+      }
+
       return {
         ...parent,
-        breakdowns,
+        breakdowns: sortedBreakdowns,
         totalAlloted,
       };
     } catch (error) {
@@ -457,6 +566,123 @@ export function allotmentService() {
         error: (error as Error).message || "Unknown error",
       };
     }
+  };
+
+  const deleteAllotmentBreakdown = async (pk: string, sk: string) => {
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
+
+    const command = new DeleteItemCommand({
+      TableName: tableName,
+      Key: {
+        PK: { S: pk },
+        SK: { S: sk },
+      },
+    });
+
+    try {
+      await dbClient.send(command);
+      return { message: "Breakdown successfully deleted." };
+    } catch (error) {
+      console.error("Error deleting breakdown:", error);
+      return {
+        message: "Failed to delete breakdown.",
+        error: (error as Error).message || "Unknown error",
+      };
+    }
+  };
+
+  const patchDetails = async (id: string, body: Partial<AllotmentItem>) => {
+    const tableName = process.env.DYNAMODB_TABLE_NAME!;
+    const updateExpressions: string[] = [];
+    const expressionAttributeNames: Record<string, string> = {};
+    const expressionAttributeValues: Record<string, any> = {};
+
+    if (body.date) {
+      updateExpressions.push("#date = :date");
+      expressionAttributeNames["#date"] = "date";
+      expressionAttributeValues[":date"] = body.date;
+    }
+
+    if (body.particulars) {
+      updateExpressions.push("#particulars = :particulars");
+      expressionAttributeNames["#particulars"] = "particulars";
+      expressionAttributeValues[":particulars"] =
+        body.particulars.toUpperCase();
+    }
+
+    if (body.appropriationType) {
+      updateExpressions.push("#appropriationType = :appropriationType");
+      expressionAttributeNames["#appropriationType"] = "appropriationType";
+      expressionAttributeValues[":appropriationType"] =
+        body.appropriationType.toUpperCase();
+    }
+
+    if (body.bfarsBudgetType) {
+      updateExpressions.push("#bfarsBudgetType = :bfarsBudgetType");
+      expressionAttributeNames["#bfarsBudgetType"] = "bfarsBudgetType";
+      expressionAttributeValues[":bfarsBudgetType"] =
+        body.bfarsBudgetType.toUpperCase();
+    }
+
+    if (body.allotmentType) {
+      updateExpressions.push("#allotmentType = :allotmentType");
+      expressionAttributeNames["#allotmentType"] = "allotmentType";
+      expressionAttributeValues[":allotmentType"] =
+        body.allotmentType.toUpperCase();
+    }
+
+    if (body.totalAllotment !== undefined) {
+      updateExpressions.push("#totalAllotment = :totalAllotment");
+      expressionAttributeNames["#totalAllotment"] = "totalAllotment";
+      expressionAttributeValues[":totalAllotment"] = body.totalAllotment * 100;
+    }
+
+    if (updateExpressions.length === 0) {
+      throw new Error("No valid fields provided for update.");
+    }
+
+    const updateExpression = `SET ${updateExpressions.join(", ")}`;
+
+    const command = new QueryCommand({
+      TableName: tableName,
+      KeyConditionExpression: "PK = :pk AND SK = :sk",
+      ExpressionAttributeValues: {
+        ":pk": { S: `ALLOTMENT#${id.toUpperCase()}` },
+        ":sk": { S: "METADATA" },
+      },
+    });
+
+    const result = await dbClient.send(command);
+
+    if (!result.Items || result.Items.length === 0) {
+      throw new Error(`Allotment with ID '${id}' not found.`);
+    }
+
+    const updateCommand = new BatchWriteItemCommand({
+      RequestItems: {
+        [tableName]: [
+          {
+            PutRequest: {
+              Item: marshall({
+                ...unmarshall(result.Items[0]),
+                ...body,
+                totalAllotment: body.totalAllotment
+                  ? body.totalAllotment * 100
+                  : undefined,
+                updatedAt: new Date().toISOString(),
+              }),
+            },
+          },
+        ],
+      },
+    });
+
+    await dbClient.send(updateCommand);
+
+    return {
+      ...unmarshall(result.Items[0]),
+      ...body,
+    };
   };
 
   const patchBreakdown = async (body: {
@@ -522,5 +748,8 @@ export function allotmentService() {
     patchBreakdown,
     createAllotmentItem,
     postAllotmentBreakdown,
+    patchDetails,
+    updateAllotmentStatus,
+    deleteAllotmentBreakdown,
   };
 }

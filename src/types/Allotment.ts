@@ -1,3 +1,5 @@
+import { type ExFlow } from "./ExFlow";
+
 export interface AllotmentFilters {
   status?: string;
   createdAtRange?: { from: string; to: string };
@@ -40,4 +42,17 @@ export interface AllotmentItem {
   bfarsBudgetType: string;
   allotmentType: string;
   totalAllotment: number;
+  exFlow?: ExFlow[];
+}
+
+export interface AllotmentRecord {
+  allotmentId: string;
+  papId: string;
+  status: string;
+  createdAt: string;
+  amount: number;
+  SK: string;
+  uacsId: string;
+  PK: string;
+  fieldOfficeId: string;
 }
