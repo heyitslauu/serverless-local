@@ -9,6 +9,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!event.body) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ message: "Request body is required" }),
       };
     }
@@ -18,6 +21,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!pk || !sk) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ message: "Both 'pk' and 'sk' are required" }),
       };
     }
@@ -26,6 +32,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Allotment breakdown deleted successfully",
       }),
@@ -35,6 +44,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: "Internal server error" }),
     };
   }

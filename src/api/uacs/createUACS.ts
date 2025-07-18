@@ -9,6 +9,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!event.body) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Missing request body.",
         }),
@@ -21,12 +24,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if ("statusCode" in result && result.statusCode === 422) {
       return {
         statusCode: 422,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ errors: result.message }),
       };
     }
 
     return {
       statusCode: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "UACS created successfully.",
         uacs: result,
@@ -35,6 +44,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error: any) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Error creating UACS.",
         error: error.message,

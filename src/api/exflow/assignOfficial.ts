@@ -12,6 +12,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!allotmentId || !body || !body.exflow) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Invalid request. Missing allotmentId or exflow in body.",
         }),
@@ -25,6 +28,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Assigned an official successfully",
         data: result,
@@ -33,6 +39,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Failed to assign an official",
         error: error.message,

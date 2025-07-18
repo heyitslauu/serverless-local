@@ -12,6 +12,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!allotmentId || !exflowId || !status) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ message: "Missing required fields" }),
       };
     }
@@ -25,6 +28,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Exflow item updated successfully",
         data: result,
@@ -34,6 +40,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.error("Error updating exflow item:", error);
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: "Internal server error" }),
     };
   }

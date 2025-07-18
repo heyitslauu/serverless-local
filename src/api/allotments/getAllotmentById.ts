@@ -11,6 +11,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!allotmentId) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Missing Allotment ID in path parameters.",
         }),
@@ -21,6 +24,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Successfully retrieved allotment.",
         data: allotment,
@@ -29,6 +35,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error: any) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Failed to retrieve allotments.",
         error: error.message,

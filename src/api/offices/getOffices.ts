@@ -9,6 +9,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const offices = await getOffices();
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Successfully retrieved all Offices.",
         data: offices,
@@ -17,6 +20,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Error retrieving Offices",
         error: error.message,

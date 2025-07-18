@@ -21,6 +21,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     ) {
       return {
         statusCode: 422,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message:
             "Invalid payload. 'officeId', 'allotmentId' and non-empty 'breakdown' are required.",
@@ -31,6 +34,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Breakdown added to existing allotment",
         ...patchedAllotment,
@@ -39,6 +45,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Error creating Allotment",
         error: error.message,

@@ -16,6 +16,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if ("statusCode" in result && result.statusCode === 422) {
       return {
         statusCode: 422,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           error: "Validation Error",
           message: result.message,
@@ -24,6 +27,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
     return {
       statusCode: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Office created",
         data: result,
@@ -32,6 +38,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Error creating Office",
         error: error.message,

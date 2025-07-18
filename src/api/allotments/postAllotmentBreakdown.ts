@@ -10,6 +10,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!allotmentId) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Missing allotmentId in request body",
         }),
@@ -19,6 +22,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!Array.isArray(objectExpenditures) || objectExpenditures.length === 0) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "objectExpenditures must be a non-empty array",
         }),
@@ -33,11 +39,17 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(result),
     };
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Internal server error",
         error: (error as Error).message,

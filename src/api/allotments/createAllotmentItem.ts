@@ -9,11 +9,17 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const result = await createAllotmentItem(body);
     return {
       statusCode: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: "Allotment item created", data: result }),
     };
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Failed to create allotment item",
         error: (error as Error).message,

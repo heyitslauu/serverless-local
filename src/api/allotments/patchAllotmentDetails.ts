@@ -9,6 +9,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!allotmentId) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Missing allotmentId in path parameters",
         }),
@@ -20,6 +23,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!body) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Invalid body. Missing required fields.",
         }),
@@ -30,6 +36,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Allotment details updated successfully",
         data: result,
@@ -39,6 +48,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.error("Error patching allotment details:", error);
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: "Internal server error" }),
     };
   }

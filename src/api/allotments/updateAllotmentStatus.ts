@@ -10,6 +10,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!allotmentId) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ message: "Allotment ID is required" }),
       };
     }
@@ -30,6 +33,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     ) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ message: "Invalid or missing status" }),
       };
     }
@@ -38,6 +44,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Allotment status updated successfully",
       }),
@@ -46,6 +55,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.error("Error updating allotment status:", error);
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: "Internal server error" }),
     };
   }

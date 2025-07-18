@@ -10,6 +10,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     if (!officeId) {
       return {
         statusCode: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: "Missing officeId in path parameters.",
         }),
@@ -19,6 +22,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Successfully retrieved office",
         data: result,
@@ -27,6 +33,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error: any) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Failed to retrieve office.",
         error: error.message,

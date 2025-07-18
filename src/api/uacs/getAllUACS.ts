@@ -8,6 +8,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const uacsList = await getAllUACS();
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Successfully retrieved all UACS.",
         data: uacsList,
@@ -16,6 +19,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         message: "Failed to fetch UACS",
         error: (error as Error).message,
