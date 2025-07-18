@@ -36,14 +36,21 @@ provider:
 custom:
     dynamodbTableName: EmpowerexFinance${self:provider.stage}
 
+    prune:
+        automatic: true
+        number: 3
+
 plugins:
     - serverless-offline
     - serverless-dynamodb-local
+    - serverless-prune-plugin
 
 functions:
     # Offices
     createOffice:
         handler: src/api/offices/createOffice.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /offices
@@ -51,6 +58,8 @@ functions:
 
     getOffices:
         handler: src/api/offices/getOffices.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /offices
@@ -58,6 +67,8 @@ functions:
 
     getOfficeById:
         handler: src/api/offices/getOfficeById.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /offices/{officeId}
@@ -65,6 +76,8 @@ functions:
 
     deleteOffice:
         handler: src/api/offices/deleteOffice.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /offices/{officeId}
@@ -72,28 +85,32 @@ functions:
 
     patchOffice:
         handler: src/api/offices/patchOffice.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /offices/{officeId}
                   method: PATCH
 
     # PAP
-    getPAPByOffice:
-        handler: src/api/pap/getPAPByOffice.handler
-        events:
-            - httpApi:
-                  path: /offices/{officeId}/paps
-                  method: GET
+    # getPAPByOffice:
+    #     handler: src/api/pap/getPAPByOffice.handler
+    #     events:
+    #         - httpApi:
+    #               path: /offices/{officeId}/paps
+    #               method: GET
 
-    attachPAPToOffice:
-        handler: src/api/pap/attachPAP.handler
-        events:
-            - httpApi:
-                  path: /offices/{officeId}/paps
-                  method: POST
+    # attachPAPToOffice:
+    #     handler: src/api/pap/attachPAP.handler
+    #     events:
+    #         - httpApi:
+    #               path: /offices/{officeId}/paps
+    #               method: POST
 
     createPAP:
         handler: src/api/pap/createPAP.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /paps
@@ -101,6 +118,8 @@ functions:
 
     getAllPAP:
         handler: src/api/pap/getAllPAP.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /paps
@@ -108,35 +127,39 @@ functions:
 
     deletePAP:
         handler: src/api/pap/deletePAP.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /paps/{papId}
                   method: DELETE
 
-    getPAPById:
-        handler: src/api/pap/getPAPById.handler
-        events:
-            - httpApi:
-                  path: /paps/{papId}
-                  method: GET
+    # getPAPById:
+    #     handler: src/api/pap/getPAPById.handler
+    #     events:
+    #         - httpApi:
+    #               path: /paps/{papId}
+    #               method: GET
 
     # UACS
-    attachUACSToPAP:
-        handler: src/api/uacs/attachUACS.handler
-        events:
-            - httpApi:
-                  path: /offices/{officeId}/paps/{papId}/uacs
-                  method: POST
+    # attachUACSToPAP:
+    #     handler: src/api/uacs/attachUACS.handler
+    #     events:
+    #         - httpApi:
+    #               path: /offices/{officeId}/paps/{papId}/uacs
+    #               method: POST
 
-    listUACSForPAP:
-        handler: src/api/uacs/getUACS.handler
-        events:
-            - httpApi:
-                  path: /offices/{officeId}/paps/{papId}/uacs
-                  method: GET
+    # listUACSForPAP:
+    #     handler: src/api/uacs/getUACS.handler
+    #     events:
+    #         - httpApi:
+    #               path: /offices/{officeId}/paps/{papId}/uacs
+    #               method: GET
 
     createUACS:
         handler: src/api/uacs/createUACS.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /uacs
@@ -144,6 +167,8 @@ functions:
 
     deleteUACS:
         handler: src/api/uacs/deleteUACS.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /uacs/{uacsId}
@@ -151,6 +176,8 @@ functions:
 
     getAllUACS:
         handler: src/api/uacs/getAllUACS.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /uacs
@@ -166,6 +193,8 @@ functions:
 
     postAllotmentBreakdown:
         handler: src/api/allotments/postAllotmentBreakdown.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /create-allotment-breakdown
@@ -173,6 +202,8 @@ functions:
 
     createAllotment:
         handler: src/api/allotments/createAllotment.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotment
@@ -189,8 +220,8 @@ functions:
 
     getAllotments:
         handler: src/api/allotments/filterAllotments.handler
-        memorySize: 256 # mb
-        timeout: 10 # seconds
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments
@@ -207,6 +238,8 @@ functions:
 
     patchAllotmentDetails:
         handler: src/api/allotments/patchAllotmentDetails.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments/{allotmentId}
@@ -214,6 +247,8 @@ functions:
 
     updateAllotmentStatus:
         handler: src/api/allotments/updateAllotmentStatus.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments/{allotmentId}/status
@@ -221,6 +256,8 @@ functions:
 
     patchAllotmentBreakdown:
         handler: src/api/allotments/patchAllotmentBreakdown.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments/{allotmentId}/breakdown
@@ -228,6 +265,8 @@ functions:
 
     deleteAllotmentBreakdown:
         handler: src/api/allotments/deleteAllotmentBreakdown.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments/delete-breakdown
@@ -235,6 +274,8 @@ functions:
 
     assignOfficial:
         handler: src/api/exflow/assignOfficial.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments/{allotmentId}/assign-official
@@ -242,6 +283,8 @@ functions:
 
     updateExflowItem:
         handler: src/api/exflow/updateExflowItem.handler
+        memorySize: 256
+        timeout: 10
         events:
             - httpApi:
                   path: /allotments/{allotmentId}/update-official
