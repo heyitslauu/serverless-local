@@ -22,7 +22,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       };
     }
     return {
-      statusCode: 200,
+      statusCode: 201,
       body: JSON.stringify({
         message: "PAP created",
         data: result,
