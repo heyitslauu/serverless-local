@@ -233,6 +233,20 @@ functions:
                   path: /allotments/delete-breakdown
                   method: POST
 
+    assignOfficial:
+        handler: src/api/exflow/assignOfficial.handler
+        events:
+            - httpApi:
+                  path: /allotments/{allotmentId}/assign-official
+                  method: POST
+
+    updateExflowItem:
+        handler: src/api/exflow/updateExflowItem.handler
+        events:
+            - httpApi:
+                  path: /allotments/{allotmentId}/update-official
+                  method: PATCH
+
 #<====================== ALLOTMENT ======================>
 resources:
     Resources:
